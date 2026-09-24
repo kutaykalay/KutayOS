@@ -7,7 +7,7 @@ These rules take precedence over the generic ECC rules in `../ecc/`.
 - Never touch anti-cheat requirements: Secure Boot, TPM, driver signature enforcement / testsigning, `bcdedit` hypervisor/debug/nx settings, anti-cheat services (vgc, vgk, FACEIT, EasyAntiCheat*, BEService). Vanguard, FACEIT, EAC and BattlEye must keep working.
 - VBS/HVCI (Memory Integrity) changes only behind an explicit opt-in option with a warning; default leaves it untouched.
 - No hosts-file telemetry blocking (Defender flags it, some endpoints bypass it). Use policies/registry and firewall rules.
-- Do not copy code from AtlasOS (GPL-3.0) or other copyleft projects until the project license is decided. Reading their docs/format is fine. WinUtil (MIT) is fine with attribution.
+- License is GPL-3.0-or-later (`LICENSE`). Code from GPL-3.0 (AtlasOS, Revision Tool), CC-BY-SA-4.0 (ReviOS playbook) and MIT (WinUtil) projects may be reused, but every reused file or block needs an attribution comment: source project, URL, original license. Never reuse code from projects with no license or a proprietary/non-commercial license.
 
 ## Every tweak
 - Lives in `src/playbook/Configuration/tweaks/<category>/<id>.yml` with `title` and `description`.

@@ -2,6 +2,8 @@
 
 AME Wizard Playbook (`.apbx`) for Windows 11 IoT Enterprise LTSC 2024 (build 26100): performance, privacy, low-latency gaming, developer setup. v2 adds a C# WPF (.NET Framework 4.8) Toolbox for post-install toggles and rollback.
 
+License: GPL-3.0-or-later (`LICENSE`).
+
 Project rules: `.claude/rules/kutayos/project.md` (overrides the generic ECC rules in `.claude/rules/ecc/`).
 
 ## Layout
