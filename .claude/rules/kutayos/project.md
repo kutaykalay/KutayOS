@@ -26,3 +26,8 @@ These rules take precedence over the generic ECC rules in `../ecc/`.
 - Pester 5 for pure logic, with registry/service cmdlets mocked. VM smoke test for real behavior.
 - ECC's 80% coverage rule applies to pure helpers and the C# Toolbox, not to scripts whose only job is changing system state.
 - ECC web rules (SQL injection, XSS, CSRF, rate limiting, auth) do not apply to the playbook.
+
+## ECC surface
+- Only the DAILY set in `.claude/agents`, `.claude/skills` and `.claude/commands` is installed; the ECC plugin is off for this repo. Index and LIBRARY paths: `.claude/skills/skill-library/SKILL.md`.
+- Agents are project-local: `subagent_type: "planner"`, not `"ecc:planner"`. This overrides the names in `../ecc/common/agents.md`.
+- Work goes through the `orch-*` skills (two gates: plan approval, commit approval). Subagents only when the task needs one, not by default.

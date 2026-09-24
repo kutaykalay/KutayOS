@@ -17,6 +17,7 @@ Project rules: `.claude/rules/kutayos/project.md` (overrides the generic ECC rul
 ## Commands
 - Build: `powershell -NoProfile -ExecutionPolicy Bypass -File tools/build.ps1`
 - Tests: `Invoke-Pester tests` (Pester 5)
+- ECC update: `powershell -NoProfile -ExecutionPolicy Bypass -File tools/sync-ecc.ps1 [-Check]` (list in `.claude/ecc-sync.txt`)
 
 ## Test VM
 VirtualBox, Windows 11 IoT Enterprise LTSC 2024, snapshot `clean` taken before every playbook run.
