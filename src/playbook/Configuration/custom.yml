@@ -1,0 +1,11 @@
+---
+title: KutayOS Root
+description: Entry point, runs every KutayOS task in order
+actions:
+  - !writeStatus: {status: 'Preparing KutayOS'}
+  - !powerShell:
+    command: '.\KutayModules\Initialize-Kutay.ps1'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}

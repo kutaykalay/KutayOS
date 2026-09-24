@@ -1,0 +1,10 @@
+dist/
+*.apbx
+# .NET
+bin/
+obj/
+.vs/
+*.user
+# local
+.env
+*.log
