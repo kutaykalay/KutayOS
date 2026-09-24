@@ -25,7 +25,7 @@ not run here; the repo's own hooks (`host-guard.js`, `ps-lint.ps1`) do.
 | agent `code-explorer` | intake step of `orch-*` for changes to existing tweaks |
 | skills `orch-pipeline`, `orch-add-feature`, `orch-fix-defect`, `orch-change-feature`, `orch-refine-code` | the gated Research -> Plan -> TDD -> Review -> Commit workflow chosen at kickoff |
 | skills `tdd-workflow`, `verification-loop` | Pester + VM smoke test before "done" |
-| skill `search-first` | reuse AtlasOS / ReviOS / WinUtil code with attribution |
+| skill `search-first` | find the primary Microsoft source for each setting before writing it |
 | skill `strategic-compact` | manual `/compact` at phase boundaries (no hook) |
 | commands `save-session`, `resume-session` | session files in `~/.claude/session-data/` |
 

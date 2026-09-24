@@ -1,6 +1,6 @@
 # KutayOS
 
-AME Wizard Playbook (`.apbx`) for Windows 11 IoT Enterprise LTSC 2024 (build 26100): performance, privacy, low-latency gaming, developer setup. v2 adds a C# WPF (.NET Framework 4.8) Toolbox for post-install toggles and rollback.
+AME Wizard Playbook (`.apbx`) for Windows 11 IoT Enterprise LTSC 2024 (build 26100): a fast, clean, minimal and compact Windows for general users that does not break updates, security or apps. v2 adds a C# WPF (.NET Framework 4.8) Toolbox for post-install toggles and rollback.
 
 License: GPL-3.0-or-later (`LICENSE`).
 
@@ -20,4 +20,4 @@ Project rules: `.claude/rules/kutayos/project.md` (overrides the generic ECC rul
 - ECC update: `powershell -NoProfile -ExecutionPolicy Bypass -File tools/sync-ecc.ps1 [-Check]` (list in `.claude/ecc-sync.txt`)
 
 ## Test VM
-VirtualBox, Windows 11 IoT Enterprise LTSC 2024, snapshot `clean` taken before every playbook run.
+VirtualBox VM `KutayOS-Test` (created by `tools/new-testvm.ps1`: EFI, Secure Boot, TPM 2.0, 6 GB, 4 vCPU, 64 GB), Windows 11 IoT Enterprise LTSC 2024, snapshot `clean` taken before every playbook run.
