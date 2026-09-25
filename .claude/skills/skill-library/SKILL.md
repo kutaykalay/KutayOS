@@ -27,7 +27,7 @@ not run here; the repo's own hooks (`host-guard.js`, `ps-lint.ps1`) do.
 | skills `tdd-workflow`, `verification-loop` | Pester + VM smoke test before "done" |
 | skill `search-first` | find the primary Microsoft source for each setting before writing it |
 | skill `strategic-compact` | manual `/compact` at phase boundaries (no hook) |
-| commands `save-session`, `resume-session` | session files in `~/.claude/session-data/` |
+| commands `save-session`, `resume-session` | session files in `.claude/session-data/` (project-local, gitignored) |
 
 Agent names are project-local: use `subagent_type: "planner"`, not `"ecc:planner"`.
 Project overrides in `.claude/rules/kutayos/project.md` win over ECC text

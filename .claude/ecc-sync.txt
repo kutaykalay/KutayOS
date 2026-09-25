@@ -20,8 +20,8 @@ skills/verification-loop
 skills/search-first
 skills/strategic-compact
 
-commands/save-session.md
-commands/resume-session.md
+# commands/save-session.md and commands/resume-session.md are no longer synced:
+# they are project-owned copies patched to store notes in .claude/session-data/.
 
 rules/common
 rules/csharp
