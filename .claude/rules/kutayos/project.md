@@ -3,7 +3,7 @@
 These rules take precedence over the generic ECC rules in `../ecc/`.
 
 ## Red lines (never)
-- Never run playbook scripts or system-modifying commands on the dev host (Windows 11 Home). Real behavior is tested only in the LTSC 2024 VirtualBox VM. `.claude/hooks/host-guard.js` enforces this.
+- Never run playbook scripts or system-modifying commands on the dev host (Windows 11 Home). Real behavior is tested only in the LTSC 2024 VMware Workstation VM. `.claude/hooks/host-guard.js` enforces this.
 - Never touch anti-cheat requirements: Secure Boot, TPM, driver signature enforcement / testsigning, `bcdedit` hypervisor/debug/nx settings, anti-cheat services (vgc, vgk, FACEIT, EasyAntiCheat*, BEService). Vanguard, FACEIT, EAC and BattlEye must keep working.
 - VBS/HVCI (Memory Integrity) changes only behind an explicit opt-in option with a warning; default leaves it untouched.
 - No hosts-file telemetry blocking (Defender flags it, some endpoints bypass it). Use policies/registry and firewall rules.

@@ -20,4 +20,4 @@ Project rules: `.claude/rules/kutayos/project.md` (overrides the generic ECC rul
 - ECC update: `powershell -NoProfile -ExecutionPolicy Bypass -File tools/sync-ecc.ps1 [-Check]` (list in `.claude/ecc-sync.txt`)
 
 ## Test VM
-VirtualBox VM `KutayOS-Test` (created by `tools/new-testvm.ps1`: EFI, Secure Boot, TPM 2.0, 6 GB, 4 vCPU, 64 GB), Windows 11 IoT Enterprise LTSC 2024, snapshot `clean` taken before every playbook run.
+VMware Workstation VM `KutayOS-Test` (created by `tools/new-testvm.ps1`: EFI, Secure Boot, 6 GB, 4 vCPU, 64 GB NVMe; vTPM 2.0 added by hand in VM Settings because it needs VM encryption), Windows 11 IoT Enterprise LTSC 2024, snapshot `clean` taken before every playbook run. VirtualBox is no longer used.
