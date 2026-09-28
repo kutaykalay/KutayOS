@@ -128,6 +128,20 @@ Output columns: `Description`, `CreationTime`, `SequenceNumber`, `RestorePointTy
   to 0 first (snapshot the prior value), compare the newest `SequenceNumber` from
   `Get-ComputerRestorePoint` before and after, and fail with a non-zero exit if no new point appeared.
 
+## VM results (LTSC 2024 26100.9550, 2026-09-29)
+
+Slice 1 smoke test in the VMware test VM, scripts run as the elevated local admin:
+
+- A fresh install has no restore points and no `SystemRestorePointCreationFrequency` value.
+- `Enable-ComputerRestore -Drive C:\` followed by `Checkpoint-Computer` worked without resizing
+  shadow storage. The first restore point took about 85 s, the second about 45 s.
+- With the frequency value set to 0, a second restore point minutes after the first was created
+  (sequence 1 -> 2). Removing the value afterwards left the system as it was.
+- The Win32 docs confirm the silent skip: without the override, CreateRestorePoint "returns S_OK"
+  while skipping. So the sequence-number check is required, not optional.
+
+Still untested: running as SYSTEM/TrustedInstaller (KutayOS uses `currentUserElevated`).
+
 ## Unverified / Unclear
 
 - Exact behavior of `Checkpoint-Computer` when running as SYSTEM/TrustedInstaller (untested on LTSC 2024; not documented).

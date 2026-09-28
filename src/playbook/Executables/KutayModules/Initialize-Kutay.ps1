@@ -5,14 +5,7 @@ $ErrorActionPreference = 'Stop'
 
 $SupportedBuild = 26100
 $root = Join-Path $env:windir 'KutayOS'
-$logDir = Join-Path $root 'Logs'
-New-Item -ItemType Directory -Force -Path $logDir | Out-Null
-$log = Join-Path $logDir 'install.log'
-
-function Write-KutayLog([string]$Message) {
-    $line = '{0:yyyy-MM-dd HH:mm:ss} {1}' -f (Get-Date), $Message
-    Add-Content -LiteralPath $log -Value $line -Encoding UTF8
-}
+Import-Module (Join-Path $PSScriptRoot 'KutayLog.psm1')
 
 $os = Get-CimInstance Win32_OperatingSystem
 Write-KutayLog "Playbook started on '$($os.Caption)' build $($os.BuildNumber)"
@@ -24,4 +17,14 @@ if ([int]$os.BuildNumber -ne $SupportedBuild) {
 if ($os.Caption -notmatch 'LTSC') {
     Write-KutayLog "Warning: edition is not LTSC, continuing."
 }
+
+# The revert scripts must keep working after AME Wizard deletes its temporary folder.
+# Copy folder contents (not the folders) so a second run overwrites instead of nesting.
+$executables = Split-Path -Parent $PSScriptRoot
+foreach ($folder in 'KutayModules', 'KutayDesktop') {
+    $target = Join-Path $root $folder
+    New-Item -ItemType Directory -Force -Path $target | Out-Null
+    Copy-Item -Path (Join-Path $executables "$folder\*") -Destination $target -Recurse -Force
+}
+Write-KutayLog "Copied KutayModules and KutayDesktop to $root"
 exit 0
