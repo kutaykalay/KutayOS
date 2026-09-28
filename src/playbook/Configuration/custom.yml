@@ -9,3 +9,15 @@ actions:
     wait: true
     runas: currentUserElevated
     handleExitCodes: {"!0": halt}
+
+  # No restore point, no changes: the script exits 1 and AME halts.
+  - !writeStatus: {status: 'Creating a restore point'}
+  - !powerShell:
+    command: '.\KutayModules\New-KutayRestorePoint.ps1'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+
+  - !writeStatus: {status: 'Applying privacy settings'}
+  - !task: {path: 'tweaks\privacy\disable-telemetry.yml'}

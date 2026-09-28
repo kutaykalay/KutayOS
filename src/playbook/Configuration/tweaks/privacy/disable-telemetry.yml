@@ -1,0 +1,16 @@
+---
+title: Diagnostic data off
+description: Sets the "Allow diagnostic data" policy to off, so Windows sends no diagnostic data to Microsoft
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization
+  # Evidence: documented. Policy value 0 is "Diagnostic data off" (formerly Security), available on
+  # Enterprise, Education and Server editions, which includes LTSC IoT Enterprise. Microsoft states
+  # devices stay secure and Windows Update keeps working; update failure reports are no longer sent.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-telemetry
+  - !powerShell:
+    command: '.\KutayModules\Save-KutayState.ps1 -Id disable-telemetry -Registry ''HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection|AllowTelemetry'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'AllowTelemetry', type: REG_DWORD, data: '0'}
