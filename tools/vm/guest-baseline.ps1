@@ -7,6 +7,9 @@
 # vmrun appends a blank argument to every guest command line; swallow it.
 param(
     [int]$CpuSeconds = 120,
+    [double]$QuietPct = 10,
+    [int]$QuietMinutes = 5,
+    [int]$MaxWaitMinutes = 60,
     [Parameter(ValueFromRemainingArguments = $true)][string[]]$VmrunExtra
 )
 $null = $VmrunExtra
@@ -56,6 +59,24 @@ $r.bootEvents = Get-OrError {
         }
 }
 
+# Windows runs automatic maintenance (Defender scans, defrag, missed tasks) when it goes idle,
+# and again after every snapshot revert because the clock jumps. Measuring a fixed time after
+# logon captures that work instead of idle, so wait until CPU stays below $QuietPct for
+# $QuietMinutes minutes in a row. How long that takes is a metric of its own.
+$waitStart = Get-Date
+$quietRun = 0
+while ($quietRun -lt $QuietMinutes -and ((Get-Date) - $waitStart).TotalMinutes -lt $MaxWaitMinutes) {
+    $from = Get-CpuTime
+    Start-Sleep -Seconds 60
+    if ((Get-BusyPercent $from (Get-CpuTime)) -lt $QuietPct) { $quietRun++ } else { $quietRun = 0 }
+}
+$r.quietReached = $quietRun -ge $QuietMinutes
+$r.quietWaitMin = [math]::Round(((Get-Date) - $waitStart).TotalMinutes, 1)
+$r.quietAtUptimeMin = [math]::Round(((Get-Date) - $os.LastBootUpTime).TotalMinutes, 1)
+$r.quietRule = "cpu<$QuietPct% for $QuietMinutes min, max $MaxWaitMinutes min"
+
+$procCpuBefore = @{}
+Get-Process | ForEach-Object { $procCpuBefore[$_.Id] = $_.CPU }
 $start = Get-CpuTime
 $prev = $start
 $perSecond = for ($i = 0; $i -lt $CpuSeconds; $i++) {
@@ -67,6 +88,12 @@ $perSecond = for ($i = 0; $i -lt $CpuSeconds; $i++) {
 $r.cpuIdleAvgPct = [math]::Round((Get-BusyPercent $start $prev), 2)
 $r.cpuIdleMaxPct = [math]::Round(($perSecond | Measure-Object -Maximum).Maximum, 1)
 $r.cpuSeconds = $CpuSeconds
+# Who used the CPU during the measurement, so a noisy run can be explained afterwards
+$r.cpuTopProcesses = @(Get-Process | ForEach-Object {
+        $prevCpu = 0
+        if ($procCpuBefore.ContainsKey($_.Id)) { $prevCpu = $procCpuBefore[$_.Id] }
+        [pscustomobject]@{ name = $_.Name; cpuSec = [math]::Round($_.CPU - $prevCpu, 1) }
+    } | Sort-Object cpuSec -Descending | Select-Object -First 5)
 
 $os = Get-CimInstance Win32_OperatingSystem
 $r.ramTotalMB = [math]::Round($os.TotalVisibleMemorySize / 1KB)

@@ -1,7 +1,8 @@
 <#
 .SYNOPSIS
-    Measures the running test VM: waits for Tools and a desktop logon, lets it settle, then runs
-    guest-baseline.ps1 in the guest and saves the JSON on the host.
+    Measures the running test VM: waits for Tools and a desktop logon, then runs guest-baseline.ps1
+    in the guest and saves the JSON on the host. The guest script waits until the VM is quiet
+    (automatic maintenance done) before it measures, so a run can take up to about 65 minutes.
 .DESCRIPTION
     Needs KUTAY_VM_PASS and KUTAY_GUEST_PASS (see VmGuest.psm1). Start the VM and log in first.
 .EXAMPLE
@@ -11,7 +12,7 @@
 param(
     [Parameter(Mandatory)][string]$OutFile,
     [string]$Vmx = '',
-    [int]$SettleSeconds = 300,
+    [int]$SettleSeconds = 60,
     [int]$CpuSeconds = 120
 )
 
