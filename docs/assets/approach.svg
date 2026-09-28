@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="1200" height="420" role="img" aria-labelledby="t d">
+  <title id="t">Typical debloat vs KutayOS</title>
+  <desc id="d">Typical debloat removes components, so updates can fail, Defender or search may break and it is hard to undo. KutayOS changes settings and removes nothing, so Windows Update, Defender, search and apps keep working and every change has a revert script.</desc>
+  <style>
+    .card { fill: #f6f8fa; stroke: #d1d9e0; }
+    .fg { fill: #1f2328; }
+    .mute { fill: #59636e; }
+    .bad { fill: #cf222e; }
+    .good { fill: #1a7f37; }
+    text { font-family: "Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif; }
+    @media (prefers-color-scheme: dark) {
+      .card { fill: #151b23; stroke: #3d444d; }
+      .fg { fill: #f0f6fc; }
+      .mute { fill: #9198a1; }
+      .bad { fill: #f85149; }
+      .good { fill: #3fb950; }
+    }
+  </style>
+  <defs>
+    <g id="cross">
+      <circle r="16"/>
+      <path d="M-6 -6 L6 6 M6 -6 L-6 6" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+    </g>
+    <g id="check">
+      <circle r="16"/>
+      <path d="M-7 0 L-2 5 L7 -5" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </defs>
+
+  <!-- Left: typical debloat -->
+  <rect class="card" x="1" y="1" width="578" height="418" rx="20" stroke-width="2"/>
+  <text class="mute" x="40" y="62" font-size="18" font-weight="600" letter-spacing="1.5">TYPICAL DEBLOAT</text>
+  <text class="fg" x="40" y="104" font-size="30" font-weight="700">Removes parts of Windows</text>
+  <g font-size="22">
+    <use href="#cross" class="bad" x="56" y="172"/>
+    <text class="fg" x="90" y="180">Deletes components and system apps</text>
+    <use href="#cross" class="bad" x="56" y="232"/>
+    <text class="fg" x="90" y="240">Updates can fail afterwards</text>
+    <use href="#cross" class="bad" x="56" y="292"/>
+    <text class="fg" x="90" y="300">Defender or search may break</text>
+    <use href="#cross" class="bad" x="56" y="352"/>
+    <text class="fg" x="90" y="360">Hard to undo</text>
+  </g>
+
+  <!-- Right: KutayOS -->
+  <rect class="card" x="621" y="1" width="578" height="418" rx="20" stroke-width="2"/>
+  <text class="mute" x="660" y="62" font-size="18" font-weight="600" letter-spacing="1.5">KUTAYOS</text>
+  <text class="fg" x="660" y="104" font-size="30" font-weight="700">Configures, never removes</text>
+  <g font-size="22">
+    <use href="#check" class="good" x="676" y="172"/>
+    <text class="fg" x="710" y="180">Policies and documented settings</text>
+    <use href="#check" class="good" x="676" y="232"/>
+    <text class="fg" x="710" y="240">Windows Update keeps working</text>
+    <use href="#check" class="good" x="676" y="292"/>
+    <text class="fg" x="710" y="300">Defender, search and apps intact</text>
+    <use href="#check" class="good" x="676" y="352"/>
+    <text class="fg" x="710" y="360">Every change has a revert script</text>
+  </g>
+</svg>
