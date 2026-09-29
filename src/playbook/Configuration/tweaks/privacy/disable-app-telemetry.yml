@@ -1,0 +1,16 @@
+---
+title: Application telemetry off
+description: Windows stops collecting telemetry about how applications use system components
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat#appcompatturnoffapplicationimpacttelemetry
+  # Evidence: documented. Group policy "Turn off Application Telemetry" (AppCompat.admx); enabled writes
+  # AITEnable=0 (checked in the LTSC 2024 ADMX). Device scope, all editions. App compatibility fixes
+  # keep working; only the telemetry engine is off.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-app-telemetry
+  - !powerShell:
+    command: '.\KutayModules\Save-KutayState.ps1 -Id disable-app-telemetry -Registry ''HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat|AITEnable'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat', value: 'AITEnable', type: REG_DWORD, data: '0'}

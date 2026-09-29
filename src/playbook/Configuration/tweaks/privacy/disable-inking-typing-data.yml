@@ -1,0 +1,15 @@
+---
+title: Inking and typing data off
+description: Windows stops sending inking and typing samples to Microsoft; typing and handwriting keep working
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-textinput#allowlinguisticdatacollection
+  # Evidence: documented. Group policy "Improve inking and typing recognition" (TextInput.admx);
+  # disabled writes AllowLinguisticDataCollection=0. Device scope, all editions.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-inking-typing-data
+  - !powerShell:
+    command: '.\KutayModules\Save-KutayState.ps1 -Id disable-inking-typing-data -Registry ''HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\TextInput|AllowLinguisticDataCollection'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\TextInput', value: 'AllowLinguisticDataCollection', type: REG_DWORD, data: '0'}

@@ -21,3 +21,15 @@ actions:
 
   - !writeStatus: {status: 'Applying privacy settings'}
   - !task: {path: 'tweaks\privacy\disable-telemetry.yml'}
+  - !task: {path: 'tweaks\privacy\disable-app-telemetry.yml'}
+  - !task: {path: 'tweaks\privacy\disable-ceip.yml'}
+  - !task: {path: 'tweaks\privacy\disable-feedback-prompts.yml'}
+  - !task: {path: 'tweaks\privacy\disable-inking-typing-data.yml'}
+  - !task: {path: 'tweaks\privacy\disable-activity-history.yml'}
+  - !task: {path: 'tweaks\privacy\disable-advertising-id.yml'}
+
+  - !writeStatus: {status: 'Turning off suggestions and consumer content'}
+  - !task: {path: 'tweaks\privacy\disable-consumer-features.yml'}
+  - !task: {path: 'tweaks\privacy\disable-cloud-optimized-content.yml'}
+  - !task: {path: 'tweaks\privacy\disable-windows-tips.yml'}
+  - !task: {path: 'tweaks\privacy\disable-search-highlights.yml'}

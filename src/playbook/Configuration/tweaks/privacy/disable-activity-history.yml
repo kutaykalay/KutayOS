@@ -1,0 +1,18 @@
+---
+title: Activity history off
+description: Windows stops collecting the apps and files you use and never uploads them
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#enableactivityfeed
+  # Evidence: documented. Policies EnableActivityFeed, PublishUserActivities and UploadUserActivities
+  # (OSPolicy.admx); disabled writes 0. Device scope, all editions. Microsoft lists all three in
+  # https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-activity-history
+  - !powerShell:
+    command: '.\KutayModules\Save-KutayState.ps1 -Id disable-activity-history -Registry ''HKLM\SOFTWARE\Policies\Microsoft\Windows\System|EnableActivityFeed'',''HKLM\SOFTWARE\Policies\Microsoft\Windows\System|PublishUserActivities'',''HKLM\SOFTWARE\Policies\Microsoft\Windows\System|UploadUserActivities'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'EnableActivityFeed', type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'PublishUserActivities', type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'UploadUserActivities', type: REG_DWORD, data: '0'}

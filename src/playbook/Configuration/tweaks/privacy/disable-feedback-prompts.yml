@@ -1,0 +1,15 @@
+---
+title: Feedback prompts off
+description: Windows no longer asks for feedback in notifications
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience#donotshowfeedbacknotifications
+  # Evidence: documented. Group policy "Do not show feedback notifications" (FeedbackNotifications.admx);
+  # enabled writes DoNotShowFeedbackNotifications=1. Device scope, all editions. Feedback Hub still works.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-feedback-prompts
+  - !powerShell:
+    command: '.\KutayModules\Save-KutayState.ps1 -Id disable-feedback-prompts -Registry ''HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection|DoNotShowFeedbackNotifications'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'DoNotShowFeedbackNotifications', type: REG_DWORD, data: '1'}

@@ -1,0 +1,15 @@
+---
+title: Advertising ID off
+description: Turns off the advertising ID, so apps can't use it to show personalized ads
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#disableadvertisingid
+  # Evidence: documented. Group policy "Turn off the advertising ID" (UserProfiles.admx); enabled
+  # writes DisabledByGroupPolicy=1. Device scope, all editions. Only ad personalization is affected.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-advertising-id
+  - !powerShell:
+    command: '.\KutayModules\Save-KutayState.ps1 -Id disable-advertising-id -Registry ''HKLM\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo|DisabledByGroupPolicy'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo', value: 'DisabledByGroupPolicy', type: REG_DWORD, data: '1'}

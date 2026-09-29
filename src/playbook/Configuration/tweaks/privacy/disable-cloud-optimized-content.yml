@@ -1,0 +1,16 @@
+---
+title: Cloud optimized content off
+description: Windows shows its built-in default content instead of content downloaded from Microsoft
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience#disablecloudoptimizedcontent
+  # Evidence: documented. Group policy "Turn off cloud optimized content" (CloudContent.admx); enabled
+  # writes DisableCloudOptimizedContent=1. Enterprise/Education/IoT Enterprise, Windows 11 21H2+.
+  # Microsoft: experiences fall back to default content.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-cloud-optimized-content
+  - !powerShell:
+    command: '.\KutayModules\Save-KutayState.ps1 -Id disable-cloud-optimized-content -Registry ''HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent|DisableCloudOptimizedContent'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent', value: 'DisableCloudOptimizedContent', type: REG_DWORD, data: '1'}

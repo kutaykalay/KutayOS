@@ -1,0 +1,15 @@
+---
+title: Windows tips off
+description: Stops Windows from showing tips and suggestions about using Windows
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience#allowwindowstips
+  # Evidence: documented. Group policy "Do not show Windows tips" (CloudContent.admx); enabled writes
+  # DisableSoftLanding=1. Enterprise/Education/IoT Enterprise only.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-windows-tips
+  - !powerShell:
+    command: '.\KutayModules\Save-KutayState.ps1 -Id disable-windows-tips -Registry ''HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent|DisableSoftLanding'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent', value: 'DisableSoftLanding', type: REG_DWORD, data: '1'}

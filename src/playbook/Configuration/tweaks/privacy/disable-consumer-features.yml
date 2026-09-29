@@ -1,0 +1,15 @@
+---
+title: Microsoft consumer experiences off
+description: Stops Windows from installing suggested apps and showing consumer offers
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience#allowwindowsconsumerfeatures
+  # Evidence: documented. Group policy "Turn off Microsoft consumer experiences" (CloudContent.admx);
+  # enabled writes DisableWindowsConsumerFeatures=1. Enterprise/Education/IoT Enterprise only (not Pro).
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-consumer-features
+  - !powerShell:
+    command: '.\KutayModules\Save-KutayState.ps1 -Id disable-consumer-features -Registry ''HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent|DisableWindowsConsumerFeatures'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent', value: 'DisableWindowsConsumerFeatures', type: REG_DWORD, data: '1'}

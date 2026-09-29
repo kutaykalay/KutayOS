@@ -1,0 +1,15 @@
+---
+title: Search highlights off
+description: Removes trending and promotional content from the Start menu search; searching keeps working
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#allowsearchhighlights
+  # Evidence: documented. Group policy "Allow search highlights" (Search.admx); disabled writes
+  # EnableDynamicContentInWSB=0. Device scope, all editions, Windows 11 22H2+.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-search-highlights
+  - !powerShell:
+    command: '.\KutayModules\Save-KutayState.ps1 -Id disable-search-highlights -Registry ''HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search|EnableDynamicContentInWSB'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search', value: 'EnableDynamicContentInWSB', type: REG_DWORD, data: '0'}

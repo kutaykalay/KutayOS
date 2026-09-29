@@ -1,0 +1,15 @@
+---
+title: Customer Experience Improvement Program off
+description: Turns off the legacy Customer Experience Improvement Program data collection
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-icm#ceipenable
+  # Evidence: documented. Group policy "Turn off Windows Customer Experience Improvement Program"
+  # (ICM.admx); enabled writes CEIPEnable=0 (checked in the LTSC 2024 ADMX). Device scope, all editions.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-ceip
+  - !powerShell:
+    command: '.\KutayModules\Save-KutayState.ps1 -Id disable-ceip -Registry ''HKLM\SOFTWARE\Policies\Microsoft\SQMClient\Windows|CEIPEnable'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\SQMClient\Windows', value: 'CEIPEnable', type: REG_DWORD, data: '0'}
