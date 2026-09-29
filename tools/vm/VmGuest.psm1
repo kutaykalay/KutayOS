@@ -55,4 +55,27 @@ function Invoke-GuestScript {
     Invoke-Vmrun CopyFileFromGuestToHost $Vmx $GuestResult $LocalResult
 }
 
-Export-ModuleMember -Function Get-DefaultVmx, Get-VmToolsState, Test-GuestDesktop, Invoke-GuestScript
+# Copies a file or a whole folder from the host into the guest. vmrun doesn't create a missing
+# parent folder ("A file was not found"), so create it first.
+function Copy-ItemToGuest([string]$Vmx, [string]$Source, [string]$Destination) {
+    $parent = Split-Path -Path $Destination -Parent
+    $exists = & $script:Vmrun @(Get-VmAuth) directoryExistsInGuest $Vmx $parent
+    if ($exists -match 'does not exist') { Invoke-Vmrun createDirectoryInGuest $Vmx $parent }
+    Invoke-Vmrun CopyFileFromHostToGuest $Vmx $Source $Destination
+}
+
+# Reverts to a powered-off snapshot and boots the VM. vmrun starts it without the GUI: a GUI start
+# can block vmrun on the Workstation window asking for the encryption password. But without a
+# display attached the guest stalls before VMware Tools starts, so the Workstation window is then
+# opened on the running VM (no password prompt, it is already unlocked).
+function Invoke-TestVmReset([string]$Vmx, [string]$Snapshot) {
+    & $script:Vmrun -T ws -vp $env:KUTAY_VM_PASS revertToSnapshot $Vmx $Snapshot
+    if ($LASTEXITCODE -ne 0) { throw "vmrun revertToSnapshot $Snapshot failed ($LASTEXITCODE)" }
+    & $script:Vmrun -T ws -vp $env:KUTAY_VM_PASS start $Vmx nogui
+    if ($LASTEXITCODE -ne 0) { throw "vmrun start failed ($LASTEXITCODE)" }
+    $workstation = Join-Path (Split-Path -Path $script:Vmrun -Parent) 'vmware.exe'
+    Start-Process -FilePath $workstation -ArgumentList "`"$Vmx`""
+}
+
+Export-ModuleMember -Function Get-DefaultVmx, Get-VmToolsState, Test-GuestDesktop, Invoke-GuestScript,
+    Copy-ItemToGuest, Invoke-TestVmReset
