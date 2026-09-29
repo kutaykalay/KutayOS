@@ -1,3 +1,7 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '',
+    Justification = 'Pester passes these variables between its blocks')]
+param()
+
 BeforeAll {
     $modulePath = Join-Path $PSScriptRoot '..\src\playbook\Executables\KutayModules\KutayState.psm1'
     Import-Module $modulePath -Force
@@ -206,6 +210,16 @@ Describe 'Registry access' {
             $r.data | Should -Be 7
         }
 
+        It 'reads the default value of a key as (default)' {
+            $key = Get-FakeKey @{ '' = 'x' } @{ '' = 'String' }
+            Mock -ModuleName KutayState Get-Item { $key }
+
+            $r = Read-KutayRegistryValue -Path 'HKCU\Software\Test' -Name '(default)'
+
+            $r.exists | Should -BeTrue
+            $r.data | Should -Be 'x'
+        }
+
         It 'stores binary data as base64 so it survives JSON' {
             $key = Get-FakeKey @{ B = [byte[]](1, 2, 3) } @{ B = 'Binary' }
             Mock -ModuleName KutayState Get-Item { $key }
@@ -283,6 +297,39 @@ Describe 'Registry access' {
         }
     }
 
+    Context 'Remove-KutayEmptyKey' {
+        BeforeEach {
+            Mock -ModuleName KutayState Remove-Item { }
+        }
+
+        It 'removes empty keys from the path up to and including StopAt' {
+            $empty = Get-FakeKey @{} @{}
+            $empty | Add-Member ScriptProperty SubKeyCount { 0 }
+            Mock -ModuleName KutayState Get-Item { $empty }
+
+            Remove-KutayEmptyKey -Path 'HKCU\Software\A\B\C' -StopAt 'HKCU\Software\A\B'
+
+            Should -Invoke -ModuleName KutayState Remove-Item -Times 2 -Exactly
+            Should -Invoke -ModuleName KutayState Remove-Item -Times 1 -Exactly -ParameterFilter {
+                $LiteralPath -eq 'Registry::HKEY_CURRENT_USER\Software\A\B'
+            }
+        }
+
+        It 'keeps a key that still holds values' {
+            $full = Get-FakeKey @{ X = 1 } @{ X = 'DWord' }
+            $full | Add-Member ScriptProperty SubKeyCount { 0 }
+            Mock -ModuleName KutayState Get-Item { $full }
+
+            Remove-KutayEmptyKey -Path 'HKCU\Software\A\B\C' -StopAt 'HKCU\Software\A\B'
+
+            Should -Invoke -ModuleName KutayState Remove-Item -Times 0 -Exactly
+        }
+
+        It 'refuses a StopAt that is not above the path' {
+            { Remove-KutayEmptyKey -Path 'HKCU\Software\A' -StopAt 'HKCU\Software\Other' } | Should -Throw '*StopAt*'
+        }
+    }
+
     Context 'Remove-KutayRegistryValue' {
         BeforeEach {
             Mock -ModuleName KutayState Remove-ItemProperty { }
@@ -312,6 +359,15 @@ Describe 'Registry access' {
             { Remove-KutayRegistryValue -Path 'HKLM\SOFTWARE\Test' -Name 'X' } | Should -Throw '*not allowed*'
         }
 
+        It 'removes the default value of a key' {
+            $key = Get-FakeKey @{ '' = 'x' } @{ '' = 'String' }
+            Mock -ModuleName KutayState Get-Item { $key }
+
+            Remove-KutayRegistryValue -Path 'HKLM\SOFTWARE\Test' -Name '(default)'
+
+            Should -Invoke -ModuleName KutayState Remove-ItemProperty -Times 1 -Exactly -ParameterFilter { $Name -eq '(default)' }
+        }
+
         It 'does nothing when the value or key is already gone' {
             Mock -ModuleName KutayState Get-Item { }
 
@@ -339,5 +395,257 @@ Describe 'Get-KutaySnapshotId' {
         InModuleScope KutayState -Parameters @{ Root = (Join-Path $TestDrive 'missing') } { $script:StateRoot = $Root }
 
         @(Get-KutaySnapshotId).Count | Should -Be 0
+    }
+}
+
+Describe 'Per-user snapshots' {
+    BeforeEach {
+        InModuleScope KutayState -Parameters @{ Root = $TestDrive } { $script:StateRoot = $Root }
+        Get-ChildItem $TestDrive -Filter *.json | Remove-Item
+        Mock -ModuleName KutayState Get-KutayUserHive {
+            [pscustomobject]@{ user = 'S-1-5-21-100-1001'; file = 'C:\Users\PC\NTUSER.DAT'; classes = 'C:\Users\PC\UsrClass.dat' }
+            [pscustomobject]@{ user = 'default'; file = 'C:\Users\Default\NTUSER.DAT'; classes = $null }
+        }
+        # Stands in for mounting: each hive gets a root named after its user. Like the real one,
+        # -Classes skips a hive without a classes file.
+        Mock -ModuleName KutayState Use-KutayUserHive {
+            if (-not $Classes) { return & $Script "HKU\mount-$($Hive.user)" }
+            if ($Hive.classes) { & $Script "HKU\mount-$($Hive.user)_Classes" }
+        }
+        Mock -ModuleName KutayState Set-KutayRegistryValue { }
+        Mock -ModuleName KutayState Remove-KutayRegistryValue { }
+        Mock -ModuleName KutayState Test-KutayRegistryKey { $true }
+        Mock -ModuleName KutayState Remove-KutayEmptyKey { }
+    }
+
+    Context 'Software\Classes items' {
+        BeforeEach {
+            Mock -ModuleName KutayState Read-KutayRegistryValue { [pscustomobject]@{ exists = $false; type = $null; data = $null } }
+            $item = 'Software\Classes\CLSID\{X}\InprocServer32'
+        }
+
+        It 'writes them to the classes hive of each user that has one' {
+            Set-KutayUserSetting -Id 'classic-menu' -Setting "$item|(default)|String|"
+
+            Should -Invoke -ModuleName KutayState Set-KutayRegistryValue -Times 1 -Exactly
+            Should -Invoke -ModuleName KutayState Set-KutayRegistryValue -Times 1 -Exactly -ParameterFilter {
+                $Path -eq 'HKU\mount-S-1-5-21-100-1001_Classes\CLSID\{X}\InprocServer32' -and $Name -eq '(default)' -and
+                $Type -eq 'String' -and $Data -eq ''
+            }
+        }
+
+        It 'snapshots them under the path the tweak gave' {
+            Save-KutayUserSnapshot -Id 'classic-menu' -Registry "$item|(default)"
+
+            $json = Get-Content (Join-Path $TestDrive 'classic-menu.json') -Raw | ConvertFrom-Json
+            @($json.users).Count | Should -Be 1
+            $json.users[0].path | Should -Be $item
+            Should -Invoke -ModuleName KutayState Read-KutayRegistryValue -Times 1 -Exactly -ParameterFilter {
+                $Path -eq 'HKU\mount-S-1-5-21-100-1001_Classes\CLSID\{X}\InprocServer32'
+            }
+        }
+
+        It 'records the first key KutayOS has to create' {
+            Mock -ModuleName KutayState Test-KutayRegistryKey { $Path -notlike '*\{X}*' }
+
+            Save-KutayUserSnapshot -Id 'classic-menu' -Registry "$item|(default)"
+
+            $json = Get-Content (Join-Path $TestDrive 'classic-menu.json') -Raw | ConvertFrom-Json
+            $json.users[0].createdKey | Should -Be 'Software\Classes\CLSID\{X}'
+        }
+
+        It 'records no created key when the key exists' {
+            Mock -ModuleName KutayState Test-KutayRegistryKey { $true }
+
+            Save-KutayUserSnapshot -Id 'classic-menu' -Registry "$item|(default)"
+
+            $json = Get-Content (Join-Path $TestDrive 'classic-menu.json') -Raw | ConvertFrom-Json
+            $json.users[0].createdKey | Should -BeNullOrEmpty
+        }
+
+        It 'removes the keys it created on restore, up to the first one' {
+            Mock -ModuleName KutayState Test-KutayRegistryKey { $Path -notlike '*\{X}*' }
+            Mock -ModuleName KutayState Remove-KutayEmptyKey { }
+            Save-KutayUserSnapshot -Id 'classic-menu' -Registry "$item|(default)"
+
+            Restore-KutaySnapshot -Id 'classic-menu'
+
+            Should -Invoke -ModuleName KutayState Remove-KutayEmptyKey -Times 1 -Exactly -ParameterFilter {
+                $Path -eq 'HKU\mount-S-1-5-21-100-1001_Classes\CLSID\{X}\InprocServer32' -and
+                $StopAt -eq 'HKU\mount-S-1-5-21-100-1001_Classes\CLSID\{X}'
+            }
+        }
+
+        It 'restores them in the classes hive' {
+            Save-KutayUserSnapshot -Id 'classic-menu' -Registry "$item|(default)"
+
+            Restore-KutaySnapshot -Id 'classic-menu'
+
+            Should -Invoke -ModuleName KutayState Remove-KutayRegistryValue -Times 1 -Exactly -ParameterFilter {
+                $Path -eq 'HKU\mount-S-1-5-21-100-1001_Classes\CLSID\{X}\InprocServer32' -and $Name -eq '(default)'
+            }
+        }
+    }
+
+    Context 'Save-KutayUserSnapshot' {
+        It 'records the value of every user hive, by user and relative path' {
+            Mock -ModuleName KutayState Read-KutayRegistryValue {
+                if ($Path -like 'HKU\mount-default\*') { return [pscustomobject]@{ exists = $false; type = $null; data = $null } }
+                [pscustomobject]@{ exists = $true; type = 'DWord'; data = 1 }
+            }
+
+            Save-KutayUserSnapshot -Id 'hide-task-view' -Registry 'Software\Explorer\Advanced|ShowTaskViewButton'
+
+            $json = Get-Content (Join-Path $TestDrive 'hide-task-view.json') -Raw | ConvertFrom-Json
+            @($json.registry).Count | Should -Be 0
+            @($json.users).Count | Should -Be 2
+            $json.users[0].user | Should -Be 'S-1-5-21-100-1001'
+            $json.users[0].path | Should -Be 'Software\Explorer\Advanced'
+            $json.users[0].name | Should -Be 'ShowTaskViewButton'
+            $json.users[0].exists | Should -BeTrue
+            $json.users[0].data | Should -Be 1
+            $json.users[1].user | Should -Be 'default'
+            $json.users[1].exists | Should -BeFalse
+        }
+
+        It 'keeps the first snapshot when run twice' {
+            Mock -ModuleName KutayState Read-KutayRegistryValue { [pscustomobject]@{ exists = $false; type = $null; data = $null } }
+            Save-KutayUserSnapshot -Id 'hide-task-view' -Registry 'Software\A|B'
+            Mock -ModuleName KutayState Read-KutayRegistryValue { [pscustomobject]@{ exists = $true; type = 'DWord'; data = 0 } }
+
+            Save-KutayUserSnapshot -Id 'hide-task-view' -Registry 'Software\A|B'
+
+            $json = Get-Content (Join-Path $TestDrive 'hide-task-view.json') -Raw | ConvertFrom-Json
+            $json.users[0].exists | Should -BeFalse
+        }
+
+        It 'adds users that are not in an existing snapshot yet, keeping the recorded ones' {
+            Mock -ModuleName KutayState Get-KutayUserHive {
+                [pscustomobject]@{ user = 'default'; file = 'C:\Users\Default\NTUSER.DAT'; classes = $null }
+            }
+            Mock -ModuleName KutayState Read-KutayRegistryValue { [pscustomobject]@{ exists = $false; type = $null; data = $null } }
+            Save-KutayUserSnapshot -Id 'hide-task-view' -Registry 'Software\A|B'
+            # A second run: a new account exists now, and the default profile holds KutayOS's value.
+            Mock -ModuleName KutayState Get-KutayUserHive {
+                [pscustomobject]@{ user = 'S-1-5-21-100-1001'; file = 'C:\Users\PC\NTUSER.DAT'; classes = $null }
+                [pscustomobject]@{ user = 'default'; file = 'C:\Users\Default\NTUSER.DAT'; classes = $null }
+            }
+            Mock -ModuleName KutayState Read-KutayRegistryValue { [pscustomobject]@{ exists = $true; type = 'DWord'; data = 1 } }
+
+            Save-KutayUserSnapshot -Id 'hide-task-view' -Registry 'Software\A|B'
+
+            $json = Get-Content (Join-Path $TestDrive 'hide-task-view.json') -Raw | ConvertFrom-Json
+            @($json.users).Count | Should -Be 2
+            ($json.users | Where-Object user -eq 'default').exists | Should -BeFalse
+            ($json.users | Where-Object user -eq 'S-1-5-21-100-1001').data | Should -Be 1
+        }
+
+        It 'rejects a path that names a hive, since the user hive is implied' {
+            { Save-KutayUserSnapshot -Id 'bad' -Registry 'HKCU\Software\A|B' } | Should -Throw '*relative*'
+        }
+    }
+
+    Context 'Set-KutayUserSetting' {
+        It 'snapshots first, then writes the value to every user hive' {
+            Mock -ModuleName KutayState Read-KutayRegistryValue { [pscustomobject]@{ exists = $false; type = $null; data = $null } }
+            Mock -ModuleName KutayState Set-KutayRegistryValue {
+                # The original must already be on disk when the first value changes.
+                if (-not (Test-Path (Join-Path $TestDrive 'hide-task-view.json'))) { throw 'wrote before the snapshot' }
+            }
+
+            Set-KutayUserSetting -Id 'hide-task-view' -Setting 'Software\Explorer\Advanced|ShowTaskViewButton|DWord|0'
+
+            Should -Invoke -ModuleName KutayState Set-KutayRegistryValue -Times 2 -Exactly
+            foreach ($user in 'S-1-5-21-100-1001', 'default') {
+                Should -Invoke -ModuleName KutayState Set-KutayRegistryValue -Times 1 -Exactly -ParameterFilter {
+                    $Path -eq "HKU\mount-$user\Software\Explorer\Advanced" -and $Name -eq 'ShowTaskViewButton' -and
+                    $Type -eq 'DWord' -and $Data -eq '0'
+                }
+            }
+        }
+
+        It 'skips, with a warning, a user hive that cannot be loaded and still writes the others' {
+            Mock -ModuleName KutayState Read-KutayRegistryValue { [pscustomobject]@{ exists = $false; type = $null; data = $null } }
+            Mock -ModuleName KutayState Write-Warning { }
+            Mock -ModuleName KutayState Use-KutayUserHive {
+                if ($Hive.user -ne 'default') { throw [KutayHiveUnavailableException]::new('reg load failed: in use') }
+                & $Script "HKU\mount-$($Hive.user)"
+            }
+
+            Set-KutayUserSetting -Id 'hide-task-view' -Setting 'Software\A|B|DWord|0'
+
+            Should -Invoke -ModuleName KutayState Set-KutayRegistryValue -Times 1 -Exactly -ParameterFilter { $Path -like 'HKU\mount-default\*' }
+            Should -Invoke -ModuleName KutayState Write-Warning -ParameterFilter { $Message -like '*S-1-5-21-100-1001*' }
+            $json = Get-Content (Join-Path $TestDrive 'hide-task-view.json') -Raw | ConvertFrom-Json
+            @($json.users).user | Should -Be @('default')
+        }
+
+        It 'does not skip a hive when a value write fails' {
+            Mock -ModuleName KutayState Read-KutayRegistryValue { [pscustomobject]@{ exists = $false; type = $null; data = $null } }
+            Mock -ModuleName KutayState Set-KutayRegistryValue { throw 'access denied' }
+
+            { Set-KutayUserSetting -Id 'hide-task-view' -Setting 'Software\A|B|DWord|0' } | Should -Throw '*access denied*'
+        }
+
+        It 'writes a string value' {
+            Mock -ModuleName KutayState Read-KutayRegistryValue { [pscustomobject]@{ exists = $false; type = $null; data = $null } }
+
+            Set-KutayUserSetting -Id 'dark' -Setting 'Software\A|Mode|String|x y'
+
+            Should -Invoke -ModuleName KutayState Set-KutayRegistryValue -Times 1 -Exactly -ParameterFilter {
+                $Path -eq 'HKU\mount-default\Software\A' -and $Type -eq 'String' -and $Data -eq 'x y'
+            }
+        }
+
+        It 'rejects a setting that is not path|name|type|data' -ForEach @(
+            @{ Setting = 'Software\A|B|DWord' }, @{ Setting = 'Software\A|B|Binary|00' }, @{ Setting = 'HKCU\A|B|DWord|0' }
+        ) {
+            { Set-KutayUserSetting -Id 'bad' -Setting $Setting } | Should -Throw
+            Should -Invoke -ModuleName KutayState Set-KutayRegistryValue -Times 0 -Exactly
+        }
+    }
+
+    Context 'Restore-KutaySnapshot with user values' {
+        It 'puts each user value back in its own hive' {
+            Mock -ModuleName KutayState Read-KutayRegistryValue {
+                if ($Path -like 'HKU\mount-default\*') { return [pscustomobject]@{ exists = $false; type = $null; data = $null } }
+                [pscustomobject]@{ exists = $true; type = 'DWord'; data = 1 }
+            }
+            Save-KutayUserSnapshot -Id 'hide-task-view' -Registry 'Software\Explorer\Advanced|ShowTaskViewButton'
+
+            Restore-KutaySnapshot -Id 'hide-task-view'
+
+            Should -Invoke -ModuleName KutayState Set-KutayRegistryValue -Times 1 -Exactly -ParameterFilter {
+                $Path -eq 'HKU\mount-S-1-5-21-100-1001\Software\Explorer\Advanced' -and $Data -eq 1
+            }
+            Should -Invoke -ModuleName KutayState Remove-KutayRegistryValue -Times 1 -Exactly -ParameterFilter {
+                $Path -eq 'HKU\mount-default\Software\Explorer\Advanced' -and $Name -eq 'ShowTaskViewButton'
+            }
+            Join-Path $TestDrive 'hide-task-view.json' | Should -Not -Exist
+        }
+
+        It 'skips a user whose profile was deleted since the snapshot' {
+            Mock -ModuleName KutayState Read-KutayRegistryValue { [pscustomobject]@{ exists = $true; type = 'DWord'; data = 1 } }
+            Save-KutayUserSnapshot -Id 'hide-task-view' -Registry 'Software\A|B'
+            Mock -ModuleName KutayState Get-KutayUserHive {
+                [pscustomobject]@{ user = 'default'; file = 'C:\Users\Default\NTUSER.DAT' }
+            }
+
+            Restore-KutaySnapshot -Id 'hide-task-view'
+
+            Should -Invoke -ModuleName KutayState Set-KutayRegistryValue -Times 1 -Exactly -ParameterFilter {
+                $Path -like 'HKU\mount-default\*'
+            }
+            Join-Path $TestDrive 'hide-task-view.json' | Should -Not -Exist
+        }
+
+        It 'keeps the snapshot when a user value cannot be restored' {
+            Mock -ModuleName KutayState Read-KutayRegistryValue { [pscustomobject]@{ exists = $true; type = 'DWord'; data = 1 } }
+            Save-KutayUserSnapshot -Id 'hide-task-view' -Registry 'Software\A|B'
+            Mock -ModuleName KutayState Set-KutayRegistryValue { throw 'access denied' }
+
+            { Restore-KutaySnapshot -Id 'hide-task-view' } | Should -Throw '*access denied*'
+            Join-Path $TestDrive 'hide-task-view.json' | Should -Exist
+        }
     }
 }

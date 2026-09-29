@@ -39,4 +39,15 @@ Describe 'Tweak <Name>' -ForEach $tweaks {
             $before | Should -Match ([regex]::Escape($item)) -Because "$item must be snapshotted before it changes"
         }
     }
+
+    It 'writes per-user values only through Set-KutayUserSetting' {
+        # AME's HKCU !registryValue picks its own set of hives, which the snapshot can't follow.
+        $text | Should -Not -Match "!registryValue:\s*\{\s*path:\s*'(HKCU|HKU|HKEY_CURRENT_USER|HKEY_USERS)\\"
+    }
+
+    It 'names its user settings snapshot after the file' {
+        foreach ($match in [regex]::Matches($text, 'Set-KutayUserSetting\.ps1\s+-Id\s+(\S+)')) {
+            $match.Groups[1].Value | Should -Be $Id
+        }
+    }
 }

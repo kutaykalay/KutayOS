@@ -40,9 +40,10 @@ function Write-SmokeManifest([string]$Path) {
     $tweaks = @(Get-KutayTaskPath -Path (Join-Path $config 'custom.yml') | ForEach-Object {
             $file = Join-Path $config $_
             [ordered]@{
-                id       = [IO.Path]::GetFileNameWithoutExtension($file)
-                commands = @(Get-KutayTweakCommand -Path $file)
-                changes  = @(Get-KutayTweakChange -Path $file)
+                id          = [IO.Path]::GetFileNameWithoutExtension($file)
+                commands    = @(Get-KutayTweakCommand -Path $file)
+                changes     = @(Get-KutayTweakChange -Path $file)
+                userChanges = @(Get-KutayTweakUserChange -Path $file)
             }
         })
     [IO.File]::WriteAllText($Path, (ConvertTo-Json -InputObject $tweaks -Depth 5))

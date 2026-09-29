@@ -1,7 +1,8 @@
 <#
 Guest side of Invoke-TweakSmoke.ps1. Runs inside the test VM, never on the dev host.
-Applies every tweak from manifest.json twice the way AME would (snapshot command, then the registry
-values), checks the values and snapshots, reverts everything with Revert-KutayOS.ps1 -All and
+Applies every tweak from manifest.json twice the way AME would (the commands, then the registry
+values), checks the values and snapshots (per-user values in every user hive and the default
+profile), reverts everything with Revert-KutayOS.ps1 -All and
 checks that every value is back. Writes PASS/FAIL lines to result.txt; the host decides the verdict.
 vmrun appends a blank argument, so remaining arguments are accepted and ignored.
 #>
@@ -23,10 +24,44 @@ function Add-Check([string]$Name, [bool]$Ok, [string]$Detail = '') {
     $results.Add($line)
 }
 
-function Get-ProviderPath([string]$Path) { 'Registry::' + ($Path -replace '^HKLM\\', 'HKEY_LOCAL_MACHINE\') }
+function Get-ProviderPath([string]$Path) {
+    'Registry::' + ($Path -replace '^HKLM\\', 'HKEY_LOCAL_MACHINE\' -replace '^HKU\\', 'HKEY_USERS\')
+}
 
-# The value as text, or $null when it doesn't exist.
+# Per-user values in every user hive, keyed 'user|path|name'; $null where a value doesn't exist.
+# Software\Classes paths are read from the classes hive; a hive without one has no entry.
+function Read-UserValue([object[]]$Changes) {
+    $values = @{}
+    foreach ($hive in @(Get-KutayUserHive)) {
+        foreach ($change in $Changes) {
+            $split = Split-KutayUserPath $change.path
+            Use-KutayUserHive -Hive $hive -Classes:$split.classes -Script {
+                param($HiveRoot)
+                $values["$($hive.user)|$($change.path)|$($change.name)"] = Read-Value "$HiveRoot\$($split.path)" $change.name
+            } | Out-Null
+        }
+    }
+    $values
+}
+
+# Whether the key of each per-user change exists in every user hive, keyed 'user|path'.
+function Read-UserKey([object[]]$Changes) {
+    $keys = @{}
+    foreach ($hive in @(Get-KutayUserHive)) {
+        foreach ($change in $Changes) {
+            $split = Split-KutayUserPath $change.path
+            Use-KutayUserHive -Hive $hive -Classes:$split.classes -Script {
+                param($HiveRoot)
+                $keys["$($hive.user)|$($change.path)"] = Test-Path -LiteralPath (Get-ProviderPath "$HiveRoot\$($split.path)")
+            } | Out-Null
+        }
+    }
+    $keys
+}
+
+# The value as text, or $null when it doesn't exist. '(default)' is the key's default value.
 function Read-Value([string]$Path, [string]$Name) {
+    if ($Name -eq '(default)') { $Name = '' }
     $key = Get-Item -LiteralPath (Get-ProviderPath $Path) -ErrorAction SilentlyContinue
     if (-not $key -or $key.GetValueNames() -notcontains $Name) { return $null }
     [string]$key.GetValue($Name)
@@ -56,8 +91,32 @@ function Invoke-TweakPass([object[]]$Tweaks, [int]$Pass) {
                 $now = Read-Value $change.path $change.name
                 Add-Check "pass $Pass $($tweak.id) $($change.name)=$($change.data)" ($now -eq $change.data) "read '$now'"
             }
+            $userChanges = @($tweak.userChanges)
+            if (-not $userChanges.Count) { continue }
+            $now = Read-UserValue $userChanges
+            foreach ($key in @($now.Keys | Sort-Object)) {
+                $user, $path, $name = $key -split '\|', 3
+                $want = @($userChanges | Where-Object { $_.path -eq $path -and $_.name -eq $name })[0].data
+                Add-Check "pass $Pass $($tweak.id) $user $name=$want" ($now[$key] -eq $want) "read '$($now[$key])'"
+            }
         }
     } finally { Pop-Location }
+}
+
+# Checks that a tweak's snapshot has every user hive's original value of every per-user change.
+function Test-UserSnapshot($Tweak, $Snapshot, [hashtable]$Original) {
+    $users = @()
+    if ($Snapshot.PSObject.Properties['users']) { $users = @($Snapshot.users) }
+    foreach ($change in @($Tweak.userChanges)) {
+        foreach ($key in @($Original.Keys | Where-Object { $_ -like "*|$($change.path)|$($change.name)" })) {
+            $user = ($key -split '\|', 2)[0]
+            $entry = @($users | Where-Object { $_.user -eq $user -and $_.path -eq $change.path -and $_.name -eq $change.name })
+            if (-not $entry.Count) { Add-Check "$($Tweak.id) snapshot covers $user $($change.name)" $false; continue }
+            $recorded = $null
+            if ($entry[0].exists) { $recorded = [string]$entry[0].data }
+            Add-Check "$($Tweak.id) snapshot holds original $user $($change.name)" ($recorded -eq $Original[$key]) "original '$($Original[$key])', recorded '$recorded'"
+        }
+    }
 }
 
 function Read-Snapshot([string]$Id) {
@@ -76,6 +135,17 @@ try {
     foreach ($change in @($tweaks | ForEach-Object { @($_.changes) })) {
         $original["$($change.path)|$($change.name)"] = Read-Value $change.path $change.name
     }
+    Import-Module (Join-Path $executables 'KutayModules\KutayUserHive.psm1')
+    $hiveUsers = @(Get-KutayUserHive | ForEach-Object { $_.user })
+    # At least the signed-in guest user and the default profile, or per-user checks prove nothing.
+    Add-Check 'user hives found' ($hiveUsers.Count -ge 2) ($hiveUsers -join ', ')
+    $allUserChanges = @($tweaks | ForEach-Object { @($_.userChanges) })
+    $userOriginal = @{}
+    $keyOriginal = @{}
+    if ($allUserChanges.Count) {
+        $userOriginal = Read-UserValue $allUserChanges
+        $keyOriginal = Read-UserKey $allUserChanges
+    }
 
     Invoke-TweakPass $tweaks 1
     $firstSnapshots = @{}
@@ -83,7 +153,9 @@ try {
         $json = Read-Snapshot $tweak.id
         $firstSnapshots[$tweak.id] = $json
         if (-not $json) { Add-Check "$($tweak.id) snapshot exists" $false; continue }
-        $items = @(($json | ConvertFrom-Json).registry)
+        $snapshot = $json | ConvertFrom-Json
+        Test-UserSnapshot $tweak $snapshot $userOriginal
+        $items = @($snapshot.registry)
         foreach ($change in @($tweak.changes)) {
             $covered = @($items | Where-Object { $_.path -eq $change.path -and $_.name -eq $change.name }).Count -gt 0
             Add-Check "$($tweak.id) snapshot covers $($change.name)" $covered
@@ -106,6 +178,17 @@ try {
         $path, $name = $key -split '\|', 2
         $now = Read-Value $path $name
         Add-Check "reverted $name" ($now -eq $original[$key]) "original '$($original[$key])', now '$now'"
+    }
+    if ($allUserChanges.Count) {
+        $userNow = Read-UserValue $allUserChanges
+        foreach ($key in @($userOriginal.Keys | Sort-Object)) {
+            Add-Check "reverted $key" ($userNow[$key] -eq $userOriginal[$key]) "original '$($userOriginal[$key])', now '$($userNow[$key])'"
+        }
+        # A key KutayOS created must be gone again, or an empty CLSID key keeps changing Explorer.
+        $keyNow = Read-UserKey $allUserChanges
+        foreach ($key in @($keyOriginal.Keys | Sort-Object)) {
+            Add-Check "key restored $key" ($keyNow[$key] -eq $keyOriginal[$key]) "existed '$($keyOriginal[$key])', now '$($keyNow[$key])'"
+        }
     }
     $left = @(Get-ChildItem -LiteralPath $stateRoot -Filter *.json -ErrorAction SilentlyContinue)
     Add-Check 'no snapshots left after revert' ($left.Count -eq 0) "$($left.Count) left"
