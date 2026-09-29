@@ -20,6 +20,14 @@ $script:Hives = @{
 # Per-user settings a tweak can write. Add more when a tweak needs them.
 $script:UserTypes = 'DWord', 'String'
 $script:DefaultValueName = '(default)'
+$script:HiveEnums = @{
+    HKLM = [Microsoft.Win32.RegistryHive]::LocalMachine
+    HKCU = [Microsoft.Win32.RegistryHive]::CurrentUser
+    HKU  = [Microsoft.Win32.RegistryHive]::Users
+    HKCR = [Microsoft.Win32.RegistryHive]::ClassesRoot
+}
+# Round-trip time: sortable, and fine enough that tweaks applied in the same second keep their order.
+$script:TimeFormat = 'o'
 
 function ConvertTo-KutayProviderPath([string]$Path) {
     $hive, $rest = $Path -split '\\', 2
@@ -42,6 +50,19 @@ function Split-RegistryItem([string]$Item) {
 function Get-KeyValueName([string]$Name) {
     if ($Name -eq $script:DefaultValueName) { return '' }
     $Name
+}
+
+function Remove-KutayDefaultValue {
+    [CmdletBinding(SupportsShouldProcess)]
+    param([Parameter(Mandatory)][string]$Path)
+    if (-not $PSCmdlet.ShouldProcess($Path, 'Remove default value')) { return }
+    $hive, $rest = $Path -split '\\', 2
+    $base = [Microsoft.Win32.RegistryKey]::OpenBaseKey($script:HiveEnums[$hive], [Microsoft.Win32.RegistryView]::Default)
+    try {
+        $key = $base.OpenSubKey($rest, $true)
+        if (-not $key) { return }
+        try { $key.DeleteValue('', $false) } finally { $key.Close() }
+    } finally { $base.Close() }
 }
 
 function Read-KutayRegistryValue {
@@ -83,6 +104,8 @@ function Remove-KutayRegistryValue {
     $key = ConvertTo-KutayProviderPath $Path
     $item = Get-Item -LiteralPath $key -ErrorAction SilentlyContinue
     if ($item -and $item.GetValueNames() -contains (Get-KeyValueName $Name) -and $PSCmdlet.ShouldProcess("$Path\$Name", 'Remove value')) {
+        # Remove-ItemProperty can't remove a default value ("Property (default) does not exist").
+        if ($Name -eq $script:DefaultValueName) { Remove-KutayDefaultValue $Path; return }
         Remove-ItemProperty -LiteralPath $key -Name $Name -ErrorAction Stop
     }
 }
@@ -100,7 +123,7 @@ function Save-KutaySnapshot {
             $current = Read-KutayRegistryValue -Path $_.path -Name $_.name
             [ordered]@{ path = $_.path; name = $_.name; exists = $current.exists; type = $current.type; data = $current.data }
         })
-    Write-SnapshotFile $file ([ordered]@{ id = $Id; createdAt = (Get-Date).ToString('s'); registry = $values })
+    Write-SnapshotFile $file ([ordered]@{ id = $Id; createdAt = (Get-Date).ToString($script:TimeFormat); registry = $values })
 }
 
 function Write-SnapshotFile([string]$File, $Snapshot) {
@@ -133,7 +156,7 @@ function Save-KutayUserSnapshot {
 
     # The first snapshot of a value wins. A later run only adds users it doesn't know yet (an account
     # created since, or one an earlier run could not reach), so revert covers them too.
-    $snapshot = [ordered]@{ id = $Id; createdAt = (Get-Date).ToString('s'); registry = @(); users = @() }
+    $snapshot = [ordered]@{ id = $Id; createdAt = (Get-Date).ToString($script:TimeFormat); registry = @(); users = @() }
     if (Test-Path -LiteralPath $file) {
         $existing = Get-Content -LiteralPath $file -Raw | ConvertFrom-Json
         $snapshot = [ordered]@{ id = $existing.id; createdAt = $existing.createdAt; registry = @($existing.registry); users = @() }
@@ -290,9 +313,16 @@ function Restore-KutaySnapshot {
     Remove-Item -LiteralPath $file
 }
 
+# Snapshot ids by name, or with -NewestFirst in reverse order of creation: tweaks can share a key
+# (only the first one records creating it), so revert must undo the last change first.
 function Get-KutaySnapshotId {
+    param([switch]$NewestFirst)
     if (-not (Test-Path -LiteralPath $script:StateRoot)) { return }
-    Get-ChildItem -LiteralPath $script:StateRoot -Filter *.json | Sort-Object Name | ForEach-Object { $_.BaseName }
+    $files = @(Get-ChildItem -LiteralPath $script:StateRoot -Filter *.json)
+    if (-not $NewestFirst) { return $files | Sort-Object Name | ForEach-Object { $_.BaseName } }
+    $files | ForEach-Object {
+        [pscustomobject]@{ id = $_.BaseName; createdAt = [string](Get-Content -LiteralPath $_.FullName -Raw | ConvertFrom-Json).createdAt }
+    } | Sort-Object -Property createdAt, id -Descending | ForEach-Object { $_.id }
 }
 
 Export-ModuleMember -Function Save-KutaySnapshot, Save-KutayUserSnapshot, Set-KutayUserSetting,

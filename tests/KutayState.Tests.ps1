@@ -363,9 +363,13 @@ Describe 'Registry access' {
             $key = Get-FakeKey @{ '' = 'x' } @{ '' = 'String' }
             Mock -ModuleName KutayState Get-Item { $key }
 
+            Mock -ModuleName KutayState Remove-KutayDefaultValue { }
+
             Remove-KutayRegistryValue -Path 'HKLM\SOFTWARE\Test' -Name '(default)'
 
-            Should -Invoke -ModuleName KutayState Remove-ItemProperty -Times 1 -Exactly -ParameterFilter { $Name -eq '(default)' }
+            # Remove-ItemProperty -Name '(default)' fails with "Property (default) does not exist".
+            Should -Invoke -ModuleName KutayState Remove-ItemProperty -Times 0 -Exactly
+            Should -Invoke -ModuleName KutayState Remove-KutayDefaultValue -Times 1 -Exactly -ParameterFilter { $Path -eq 'HKLM\SOFTWARE\Test' }
         }
 
         It 'does nothing when the value or key is already gone' {
@@ -389,6 +393,18 @@ Describe 'Get-KutaySnapshotId' {
         Save-KutaySnapshot -Id 'a-first' -Registry 'HKLM\SOFTWARE\Test|A'
 
         Get-KutaySnapshotId | Should -Be @('a-first', 'b-second')
+    }
+
+    It 'lists the newest snapshot first with -NewestFirst, so revert undoes the last change first' {
+        InModuleScope KutayState -Parameters @{ Root = $TestDrive } { $script:StateRoot = $Root }
+        Get-ChildItem $TestDrive -Filter *.json | Remove-Item
+        Mock -ModuleName KutayState Read-KutayRegistryValue {
+            [pscustomobject]@{ exists = $false; type = $null; data = $null }
+        }
+        Save-KutaySnapshot -Id 'b-older' -Registry 'HKLM\SOFTWARE\Test|B'
+        Save-KutaySnapshot -Id 'a-newer' -Registry 'HKLM\SOFTWARE\Test|A'
+
+        Get-KutaySnapshotId -NewestFirst | Should -Be @('a-newer', 'b-older')
     }
 
     It 'returns nothing when the state folder does not exist' {

@@ -30,7 +30,7 @@ try {
     $modules = Join-Path $PSScriptRoot '..\KutayModules'
     Import-Module (Join-Path $modules 'KutayLog.psm1')
     Import-Module (Join-Path $modules 'KutayState.psm1')
-    if ($PSCmdlet.ParameterSetName -eq 'All') { $Id = @(Get-KutaySnapshotId) }
+    if ($PSCmdlet.ParameterSetName -eq 'All') { $Id = @(Get-KutaySnapshotId -NewestFirst) }
     if (-not $Id) { Write-KutayLog 'Nothing to revert.' -Log revert; exit 0 }
 
     $failed = 0
