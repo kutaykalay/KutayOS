@@ -1,0 +1,15 @@
+---
+title: Taskbar search box hidden
+description: Hides the search box on the taskbar; press Start and type to search as before
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#configuresearchontaskbarmode
+  # Evidence: community. Per-user value SearchboxTaskbarMode, the one Settings > Personalization > Taskbar
+  # writes; 0 = hidden, the same as the Hidden entry of the ConfigureSearchOnTaskbarMode policy
+  # (Search.admx in the VM). Per-user, not the policy, so the user can turn it back on.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id hide-taskbar-search
+  - !powerShell:
+    command: '.\KutayModules\Set-KutayUserSetting.ps1 -Id hide-taskbar-search -Setting ''Software\Microsoft\Windows\CurrentVersion\Search|SearchboxTaskbarMode|DWord|0'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}

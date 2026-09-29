@@ -1,0 +1,14 @@
+---
+title: Task View button hidden
+description: Hides the Task View button on the taskbar; Win+Tab still opens Task View
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-start#hidetaskviewbutton
+  # Evidence: community. Per-user value ShowTaskViewButton, the one the taskbar settings toggle writes; the
+  # HideTaskViewButton policy (Taskbar.admx) does the same but locks it. Per-user, so it can be undone.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id hide-task-view-button
+  - !powerShell:
+    command: '.\KutayModules\Set-KutayUserSetting.ps1 -Id hide-task-view-button -Setting ''Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced|ShowTaskViewButton|DWord|0'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}

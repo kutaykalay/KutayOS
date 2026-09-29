@@ -33,3 +33,17 @@ actions:
   - !task: {path: 'tweaks\privacy\disable-cloud-optimized-content.yml'}
   - !task: {path: 'tweaks\privacy\disable-windows-tips.yml'}
   - !task: {path: 'tweaks\privacy\disable-search-highlights.yml'}
+  - !task: {path: 'tweaks\privacy\disable-tailored-experiences.yml'}
+  - !task: {path: 'tweaks\privacy\disable-third-party-suggestions.yml'}
+  - !task: {path: 'tweaks\privacy\disable-start-web-search.yml'}
+
+  - !writeStatus: {status: 'Tidying up the taskbar and File Explorer'}
+  - !task: {path: 'tweaks\shell\hide-taskbar-search.yml'}
+  - !task: {path: 'tweaks\shell\hide-task-view-button.yml'}
+  - !task: {path: 'tweaks\shell\show-file-extensions.yml'}
+  - !task: {path: 'tweaks\shell\enable-end-task.yml'}
+  # Options from the FeaturePages in playbook.conf; each action inside checks its own option.
+  - !task: {path: 'tweaks\shell\taskbar-align-left.yml'}
+  - !task: {path: 'tweaks\shell\dark-mode.yml'}
+  - !task: {path: 'tweaks\shell\classic-context-menu.yml'}
+  - !task: {path: 'tweaks\shell\hide-explorer-home-gallery.yml'}

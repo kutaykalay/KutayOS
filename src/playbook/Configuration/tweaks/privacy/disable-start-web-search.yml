@@ -1,0 +1,16 @@
+---
+title: Web results in Start search off
+description: Start search shows only apps, files and settings on this PC, no Bing web results; File Explorer stops listing recent searches
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-windowsexplorer#disablesearchboxsuggestions
+  # Evidence: community. User policy DisableSearchBoxSuggestions (WindowsExplorer.admx in the VM, class
+  # User; enabled writes 1). Microsoft documents it for recent entries in the File Explorer search
+  # box; that it also removes web results from Start search on Windows 11 is community knowledge.
+  # ConnectedSearchUseWeb is not used: the LTSC Search.admx marks it WinBlueOnly.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-start-web-search
+  - !powerShell:
+    command: '.\KutayModules\Set-KutayUserSetting.ps1 -Id disable-start-web-search -Setting ''Software\Policies\Microsoft\Windows\Explorer|DisableSearchBoxSuggestions|DWord|1'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}

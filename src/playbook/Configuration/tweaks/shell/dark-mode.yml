@@ -1,0 +1,15 @@
+---
+title: Dark mode
+description: Windows and apps use the dark color mode
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/ui/apply-windows-themes
+  # Evidence: community. Per-user values AppsUseLightTheme and SystemUsesLightTheme, the ones Settings >
+  # Personalization > Colors > Choose your mode writes; 0 = dark.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id dark-mode
+  - !powerShell:
+    command: '.\KutayModules\Set-KutayUserSetting.ps1 -Id dark-mode -Setting ''Software\Microsoft\Windows\CurrentVersion\Themes\Personalize|AppsUseLightTheme|DWord|0'',''Software\Microsoft\Windows\CurrentVersion\Themes\Personalize|SystemUsesLightTheme|DWord|0'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+    option: 'dark-mode'

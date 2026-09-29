@@ -1,0 +1,14 @@
+---
+title: End task on the taskbar
+description: Adds End task to the right-click menu of taskbar apps, to close a frozen app without Task Manager
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/apps/get-started/developer-mode-features-and-debugging
+  # Evidence: community. Per-user value TaskbarEndTask, the one Settings > System > For developers > End task
+  # writes; 1 turns it on. Does not turn on Developer Mode.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id enable-end-task
+  - !powerShell:
+    command: '.\KutayModules\Set-KutayUserSetting.ps1 -Id enable-end-task -Setting ''Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings|TaskbarEndTask|DWord|1'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}

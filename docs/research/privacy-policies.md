@@ -36,14 +36,25 @@ Pitfalls found while checking:
 - Consumer features, cloud optimized content and Windows tips are Enterprise/Education/IoT
   Enterprise only; LTSC IoT Enterprise qualifies.
 
-## Parked
+## Applied in Slice 3 (user scope, every profile and the default profile)
 
-- **User-scope policies** (need per-user snapshots for all profiles and the default profile first):
-  `DisableTailoredExperiencesWithDiagnosticData`, `DisableThirdPartySuggestions` (both
-  `HKCU\Software\Policies\Microsoft\Windows\CloudContent`), and web results in Start search.
-- **Web search in Start** (`ConnectedSearchUseWeb=0`, Search CSP `DoNotUseWebResults`): the CSP page
-  lists Windows 10 1803+, but the LTSC 2024 `Search.admx` marks the policy `WinBlueOnly`. Needs a VM
-  check before use. The per-user `DisableSearchBoxSuggestions` is the likelier working setting.
+Checked against the ADMX files in the VM (`tools/vm/guest-admx-lookup.ps1`, 2026-09-29):
+
+| Tweak | Policy (ADMX) | Class | Enabled value |
+| --- | --- | --- | --- |
+| disable-tailored-experiences | `DisableTailoredExperiencesWithDiagnosticData` (CloudContent) | User | 1 |
+| disable-third-party-suggestions | `DisableThirdPartySuggestions` (CloudContent) | User | 1 |
+| disable-start-web-search | `DisableSearchBoxSuggestions` (WindowsExplorer) | User | 1 |
+
+- `DisableSearchBoxSuggestions` is documented for recent entries in the File Explorer search box;
+  that it also removes web results from Start search on Windows 11 is community knowledge
+  (evidence `community`).
+- `ConnectedSearchUseWeb` (`DoNotUseWebResults`, Search.admx) is not used: the LTSC 2024 ADMX marks it
+  `WinBlueOnly`, class Machine.
+- `HideRecommendedSection` (StartMenu.admx, class Both, Windows 11 22H2+) exists on LTSC; whether it
+  hides Recommended on IoT Enterprise needs a visual check at a desktop logon in the VM.
+
+## Parked
 - **`DisableInventory`** (AppCompat): unclear whether Inventory Collector still exists in 24H2.
 - **Find My Device, app location access, Windows Error Reporting**: they turn features off, not
   just data collection. Candidates for opt-in options with a warning.

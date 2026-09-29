@@ -1,0 +1,15 @@
+---
+title: Tailored experiences off
+description: Microsoft no longer uses your diagnostic data to show you personalized tips, ads and recommendations
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience#allowtailoredexperienceswithdiagnosticdata
+  # Evidence: documented. User policy "Do not use diagnostic data for tailored experiences"
+  # (CloudContent.admx in the VM, class User); enabled writes 1. A policy, like the Slice 2 privacy
+  # settings, because it only stops data use and removes no feature.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-tailored-experiences
+  - !powerShell:
+    command: '.\KutayModules\Set-KutayUserSetting.ps1 -Id disable-tailored-experiences -Setting ''Software\Policies\Microsoft\Windows\CloudContent|DisableTailoredExperiencesWithDiagnosticData|DWord|1'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}

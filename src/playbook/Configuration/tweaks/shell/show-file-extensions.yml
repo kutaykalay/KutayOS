@@ -1,0 +1,14 @@
+---
+title: File extensions shown
+description: File Explorer shows extensions like .pdf and .exe, so a file named invoice.pdf.exe is easy to spot
+actions:
+  # Source: https://support.microsoft.com/en-us/windows/common-file-name-extensions-in-windows-da4a4430-8e76-89c5-59f7-1cdbbc75cb01
+  # Evidence: community. Per-user value HideFileExt, the one Explorer's View > Show > File name extensions
+  # toggle writes; 0 shows extensions.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id show-file-extensions
+  - !powerShell:
+    command: '.\KutayModules\Set-KutayUserSetting.ps1 -Id show-file-extensions -Setting ''Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced|HideFileExt|DWord|0'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}

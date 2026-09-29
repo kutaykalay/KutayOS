@@ -1,0 +1,18 @@
+---
+title: Classic right-click menu
+description: File Explorer shows the full right-click menu right away, without "Show more options". Applies to the accounts on this PC; accounts created later keep the Windows 11 menu
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/win32/com/inprocserver32
+  # Evidence: community. An empty per-user InprocServer32 default value for CLSID
+  # {86ca1aa0-34aa-4e8b-a509-50c905bae2a2} (the Windows 11 context menu handler) overrides its
+  # machine registration, so Explorer falls back to the classic menu after a restart of Explorer.
+  # Lives in the classes hive (UsrClass.dat), which the default profile does not have. The snapshot
+  # records the keys KutayOS creates, so revert removes them and the Windows 11 menu comes back.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id classic-context-menu
+  - !powerShell:
+    command: '.\KutayModules\Set-KutayUserSetting.ps1 -Id classic-context-menu -Setting ''Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32|(default)|String|'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+    option: 'classic-context-menu'

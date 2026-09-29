@@ -1,0 +1,18 @@
+---
+title: File Explorer opens to This PC
+description: File Explorer opens to This PC and hides Home and Gallery in the side pane. Hiding applies to the accounts on this PC; accounts created later still open to This PC
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/win32/shell/integrate-cloud-storage
+  # Evidence: community. System.IsPinnedToNameSpaceTree=0 (documented above for namespace
+  # extensions) on the per-user CLSID keys of Home {f874310e-b6b7-47dc-bc84-b9e6b38f5903} and
+  # Gallery {e88865ea-0e1c-4e20-9aa6-edcd0212c87c} removes them from the navigation pane; they
+  # live in the classes hive (UsrClass.dat). LaunchTo=1 is the per-user value that File Explorer
+  # options > Open File Explorer to > This PC writes.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id hide-explorer-home-gallery
+  - !powerShell:
+    command: '.\KutayModules\Set-KutayUserSetting.ps1 -Id hide-explorer-home-gallery -Setting ''Software\Classes\CLSID\{f874310e-b6b7-47dc-bc84-b9e6b38f5903}|System.IsPinnedToNameSpaceTree|DWord|0'',''Software\Classes\CLSID\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}|System.IsPinnedToNameSpaceTree|DWord|0'',''Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced|LaunchTo|DWord|1'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+    option: 'hide-explorer-home-gallery'

@@ -1,0 +1,14 @@
+---
+title: Third-party suggestions off
+description: Windows spotlight and Start no longer suggest apps and content from other companies
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience#allowthirdpartysuggestionsinwindowsspotlight
+  # Evidence: documented. User policy "Do not suggest third-party content in Windows spotlight"
+  # (CloudContent.admx in the VM, class User); enabled writes 1.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-third-party-suggestions
+  - !powerShell:
+    command: '.\KutayModules\Set-KutayUserSetting.ps1 -Id disable-third-party-suggestions -Setting ''Software\Policies\Microsoft\Windows\CloudContent|DisableThirdPartySuggestions|DWord|1'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}

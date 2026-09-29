@@ -1,0 +1,15 @@
+---
+title: Taskbar aligned left
+description: Start and the taskbar icons sit on the left, like Windows 10
+actions:
+  # Source: https://support.microsoft.com/en-us/windows/customize-the-taskbar-in-windows-0657a50f-0cc7-dbfd-ae6b-05020b195b07
+  # Evidence: community. Per-user value TaskbarAl, the one Settings > Personalization > Taskbar > Taskbar
+  # behaviors > Taskbar alignment writes; 0 = left, 1 = center (default).
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id taskbar-align-left
+  - !powerShell:
+    command: '.\KutayModules\Set-KutayUserSetting.ps1 -Id taskbar-align-left -Setting ''Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced|TaskbarAl|DWord|0'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+    option: 'taskbar-align-left'
