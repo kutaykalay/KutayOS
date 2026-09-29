@@ -1,0 +1,18 @@
+---
+title: Start without Recommended
+description: Removes the Recommended section (recent files and suggested apps) from the Start menu. A policy, so Settings can't turn it back on; Revert-KutayOS can
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-start#hiderecommendedsection
+  # Evidence: documented. Policy "Remove Recommended section from Start Menu" (StartMenu.admx in the
+  # VM, class Both, Windows 11 22H2+); enabled writes HideRecommendedSection=1. Checked in the VM on
+  # 2026-09-29 (LTSC 2024 IoT Enterprise 26100.9550): after an Explorer restart Start opens with
+  # All apps and no Recommended section. Device scope, so it covers every account.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id hide-start-recommended
+  - !powerShell:
+    command: '.\KutayModules\Save-KutayState.ps1 -Id hide-start-recommended -Registry ''HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer|HideRecommendedSection'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+    option: 'hide-start-recommended'
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer', value: 'HideRecommendedSection', type: REG_DWORD, data: '1', option: 'hide-start-recommended'}

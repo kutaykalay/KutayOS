@@ -47,3 +47,4 @@ actions:
   - !task: {path: 'tweaks\shell\dark-mode.yml'}
   - !task: {path: 'tweaks\shell\classic-context-menu.yml'}
   - !task: {path: 'tweaks\shell\hide-explorer-home-gallery.yml'}
+  - !task: {path: 'tweaks\shell\hide-start-recommended.yml'}

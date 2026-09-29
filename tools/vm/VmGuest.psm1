@@ -68,9 +68,16 @@ function Copy-ItemToGuest([string]$Vmx, [string]$Source, [string]$Destination) {
 # can block vmrun on the Workstation window asking for the encryption password. But without a
 # display attached the guest stalls before VMware Tools starts, so the Workstation window is then
 # opened on the running VM (no password prompt, it is already unlocked).
-function Invoke-TestVmReset([string]$Vmx, [string]$Snapshot) {
+# -MemoryMB overrides the memory size for this boot: the revert brings back the snapshot's size
+# (6 GB), which a host with a small page file can't commit ("anonymous paging file ... error 1450").
+# memsize stays plain text in the encrypted VMX.
+function Invoke-TestVmReset([string]$Vmx, [string]$Snapshot, [int]$MemoryMB = 0) {
     & $script:Vmrun -T ws -vp $env:KUTAY_VM_PASS revertToSnapshot $Vmx $Snapshot
     if ($LASTEXITCODE -ne 0) { throw "vmrun revertToSnapshot $Snapshot failed ($LASTEXITCODE)" }
+    if ($MemoryMB -gt 0) {
+        $text = [IO.File]::ReadAllText($Vmx) -replace '(?m)^memsize = "\d+"', "memsize = `"$MemoryMB`""
+        [IO.File]::WriteAllText($Vmx, $text)
+    }
     & $script:Vmrun -T ws -vp $env:KUTAY_VM_PASS start $Vmx nogui
     if ($LASTEXITCODE -ne 0) { throw "vmrun start failed ($LASTEXITCODE)" }
     $workstation = Join-Path (Split-Path -Path $script:Vmrun -Parent) 'vmware.exe'
