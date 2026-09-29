@@ -73,6 +73,18 @@ flowchart LR
 Shared helpers live in `Executables/KutayModules` and are copied to `%windir%\KutayOS`.
 Snapshots and logs go to `%windir%\KutayOS\State` and `%windir%\KutayOS\Logs`.
 
+## Update strategy
+
+- LTSC gets no feature updates: it stays on build 26100 and only receives cumulative updates,
+  so the playbook targets one build for the life of LTSC 2024.
+- Cumulative updates can occasionally reset a setting. Tweaks therefore use policies first
+  (principle 2), which Windows servicing is least likely to overwrite.
+- The v2 Toolbox checks for drift: it compares the applied tweaks with the current values, shows
+  what changed after an update and re-applies with one click.
+- A new LTSC release (new build number) means a new KutayOS version: add the build to
+  `SupportedBuilds`, re-test every tweak in the VM.
+- No scheduled monthly re-test routine; drift is caught by the Toolbox and by the next VM run.
+
 ## Slices
 
 Each slice: Pester tests first, implementation, one review, VM smoke test on snapshot `clean`, commit.
@@ -107,4 +119,9 @@ Developer setup (winget, runtimes) and the C# Toolbox move to v2.
 
 - Actual `Checkpoint-Computer` behavior on the 24h limit and under TrustedInstaller (verify in VM).
 - `!cmd` properties and option negation in AME (see `docs/research/ame-actions.md`).
-- Which consumer features LTSC 2024 actually ships (verify in VM before writing Slice 2/3 tweaks).
+- ~~Which consumer features LTSC 2024 actually ships.~~ Answered by `tools/vm/guest-inventory.ps1`:
+  no Store, Widgets, Copilot, OneDrive or Xbox apps; Recall payload removed; only Edge and
+  SecHealthUI provisioned. Advertising ID, tailored experiences, inking/typing collection, CEIP
+  tasks and DiagTrack are on by default.
+- winget, App Installer and Microsoft Store are absent on a clean LTSC 2024 install (checked in
+  the VM on 2026-09-27). App installs need another path.
