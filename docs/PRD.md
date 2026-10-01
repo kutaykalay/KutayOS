@@ -123,5 +123,8 @@ Developer setup (winget, runtimes) and the C# Toolbox move to v2.
   no Store, Widgets, Copilot, OneDrive or Xbox apps; Recall payload removed; only Edge and
   SecHealthUI provisioned. Advertising ID, tailored experiences, inking/typing collection, CEIP
   tasks and DiagTrack are on by default.
+- ~~Which disk space settings apply to LTSC 2024.~~ Checked in the VM (Slice 4): Windows setup
+  turns Compact OS on by itself on a small disk (64 GB), reserved storage is only on where its
+  policy passes, and hibernation needs firmware support the VM lacks.
 - winget, App Installer and Microsoft Store are absent on a clean LTSC 2024 install (checked in
   the VM on 2026-09-27). App installs need another path.

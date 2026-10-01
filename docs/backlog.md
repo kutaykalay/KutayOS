@@ -31,6 +31,18 @@ applied to existing users and the default profile.
 Prerequisite: state snapshots cover only the current user today. Per-user tweaks need snapshots
 for every user hive plus the default profile, so revert is complete for all accounts.
 
+## Compact (Slice 4, open items)
+
+Shipped: component store cleanup (default, one-way), and options for hibernation off, Compact OS and
+reserved storage off. Savings in `docs/measurements/slice4-disk.md`.
+
+- **Hibernation on real hardware.** The VM firmware has no S4, so `disable-hibernation` and its
+  revert have only run as a no-op. Check on a real PC, including whether `powercfg /hibernate on`
+  keeps a reduced hiberfile type.
+- **Not taken from WinUtil:** Storage Sense off (works against free space), Disk Cleanup / cleanmgr
+  (DISM covers the component store), temp file deletion (small gain, Windows cleans it), and
+  `/ResetBase` (installed updates could no longer be uninstalled).
+
 ## Privacy, per-user (parked from Slice 2)
 
 Slice 2 shipped device-wide (HKLM) policies only. These wait for the multi-hive snapshots above:
