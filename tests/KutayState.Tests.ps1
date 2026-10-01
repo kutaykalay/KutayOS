@@ -171,6 +171,55 @@ Describe 'Restore-KutaySnapshot' {
     }
 }
 
+Describe 'System state snapshots' {
+    BeforeEach {
+        InModuleScope KutayState -Parameters @{ Root = $TestDrive } { $script:StateRoot = $Root }
+        Get-ChildItem $TestDrive -Filter *.json | Remove-Item
+        $script:state = 'On'
+        Mock -ModuleName KutayState Get-KutaySystemState { $script:state }
+        Mock -ModuleName KutayState Set-KutaySystemState { }
+    }
+
+    It 'records the current state of the kind' {
+        Save-KutaySystemSnapshot -Id 'disable-hibernation' -Kind Hibernation
+
+        $json = Get-Content (Join-Path $TestDrive 'disable-hibernation.json') -Raw | ConvertFrom-Json
+        $json.id | Should -Be 'disable-hibernation'
+        $json.system[0].kind | Should -Be 'Hibernation'
+        $json.system[0].state | Should -Be 'On'
+        @($json.registry).Count | Should -Be 0
+    }
+
+    It 'keeps the first snapshot when run twice' {
+        Save-KutaySystemSnapshot -Id 'disable-hibernation' -Kind Hibernation
+        $script:state = 'Off'
+
+        Save-KutaySystemSnapshot -Id 'disable-hibernation' -Kind Hibernation
+
+        $json = Get-Content (Join-Path $TestDrive 'disable-hibernation.json') -Raw | ConvertFrom-Json
+        $json.system[0].state | Should -Be 'On'
+    }
+
+    It 'puts the recorded state back and removes the snapshot' {
+        Save-KutaySystemSnapshot -Id 'disable-hibernation' -Kind Hibernation
+
+        Restore-KutaySnapshot -Id 'disable-hibernation'
+
+        Should -Invoke -ModuleName KutayState Set-KutaySystemState -Times 1 -Exactly -ParameterFilter {
+            $Kind -eq 'Hibernation' -and $State -eq 'On'
+        }
+        Join-Path $TestDrive 'disable-hibernation.json' | Should -Not -Exist
+    }
+
+    It 'keeps the snapshot when the state cannot be put back' {
+        Save-KutaySystemSnapshot -Id 'disable-reserved-storage' -Kind ReservedStorage
+        Mock -ModuleName KutayState Set-KutaySystemState { throw 'reserved storage is in use' }
+
+        { Restore-KutaySnapshot -Id 'disable-reserved-storage' } | Should -Throw '*in use*'
+        Join-Path $TestDrive 'disable-reserved-storage.json' | Should -Exist
+    }
+}
+
 Describe 'Registry access' {
     BeforeAll {
         # A stand-in for a RegistryKey: only the members the module uses.

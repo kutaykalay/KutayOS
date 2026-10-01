@@ -8,6 +8,7 @@ Set-StrictMode -Version 2.0
 # revert, or the snapshot would be deleted although the value was never put back.
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'KutayUserHive.psm1')
+Import-Module (Join-Path $PSScriptRoot 'KutaySystemState.psm1')
 
 $script:StateRoot = Join-Path $env:windir 'KutayOS\State'
 $script:IdPattern = '^[a-z0-9]+(-[a-z0-9]+)*$'
@@ -124,6 +125,18 @@ function Save-KutaySnapshot {
             [ordered]@{ path = $_.path; name = $_.name; exists = $current.exists; type = $current.type; data = $current.data }
         })
     Write-SnapshotFile $file ([ordered]@{ id = $Id; createdAt = (Get-Date).ToString($script:TimeFormat); registry = $values })
+}
+
+# Records the current state of a system kind (see KutaySystemState.psm1). The first snapshot wins.
+function Save-KutaySystemSnapshot {
+    param(
+        [Parameter(Mandatory)][AllowEmptyString()][string]$Id,
+        [Parameter(Mandatory)][ValidateSet('Hibernation', 'CompactOS', 'ReservedStorage')][string]$Kind
+    )
+    $file = Get-SnapshotFile $Id
+    if (Test-Path -LiteralPath $file) { return }
+    $system = @([ordered]@{ kind = $Kind; state = (Get-KutaySystemState -Kind $Kind) })
+    Write-SnapshotFile $file ([ordered]@{ id = $Id; createdAt = (Get-Date).ToString($script:TimeFormat); registry = @(); system = $system })
 }
 
 function Write-SnapshotFile([string]$File, $Snapshot) {
@@ -309,6 +322,9 @@ function Restore-KutaySnapshot {
     foreach ($item in @($snapshot.registry)) { Restore-KutayRegistryItem $item.path $item }
     # Snapshots from before per-user support have no users list.
     if ($snapshot.PSObject.Properties['users'] -and @($snapshot.users).Count) { Restore-KutayUserItem @($snapshot.users) }
+    if ($snapshot.PSObject.Properties['system']) {
+        foreach ($item in @($snapshot.system)) { Set-KutaySystemState -Kind $item.kind -State $item.state }
+    }
     # Only forget the snapshot once every value is back, so a failed revert can be retried.
     Remove-Item -LiteralPath $file
 }
@@ -325,6 +341,6 @@ function Get-KutaySnapshotId {
     } | Sort-Object -Property createdAt, id -Descending | ForEach-Object { $_.id }
 }
 
-Export-ModuleMember -Function Save-KutaySnapshot, Save-KutayUserSnapshot, Set-KutayUserSetting,
+Export-ModuleMember -Function Save-KutaySnapshot, Save-KutayUserSnapshot, Save-KutaySystemSnapshot, Set-KutayUserSetting,
     Restore-KutaySnapshot, Get-KutaySnapshotId,
     Read-KutayRegistryValue, Set-KutayRegistryValue, Remove-KutayRegistryValue, Remove-KutayEmptyKey
