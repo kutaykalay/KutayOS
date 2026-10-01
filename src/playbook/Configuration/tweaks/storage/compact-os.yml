@@ -1,0 +1,17 @@
+---
+title: Compact OS
+description: Stores Windows system files compressed, which frees a few GB. On slow processors programs may start a little slower. Compressing takes several minutes
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/compact-os
+  # Evidence: documented. compact.exe /CompactOS:always compresses the OS files on a running system and
+  # Windows Update keeps the footprint small afterwards. Microsoft's table: 3.7 GB saved on Windows 10
+  # x64; the saving on LTSC 2024 is measured in docs/measurements/slice4-disk.md. Windows setup may
+  # already have chosen Compact OS on a small disk; then this changes nothing.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id compact-os
+  - !powerShell:
+    command: '.\KutayModules\Set-KutaySystemState.ps1 -Id compact-os -Kind CompactOS -State Always'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+    option: 'compact-os'

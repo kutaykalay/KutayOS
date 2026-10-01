@@ -1,0 +1,17 @@
+---
+title: Component store cleanup
+description: Removes old versions of Windows components that updates replaced, now instead of after 30 days. Installed updates can still be uninstalled
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/clean-up-the-winsxs-folder
+  # Evidence: documented. DISM /StartComponentCleanup on a running system gives the same result as the
+  # StartComponentCleanup task, except that superseded versions go at once instead of after 30 days.
+  # No /ResetBase: Microsoft notes that after /ResetBase existing updates can't be uninstalled.
+  # The disk saving is measured in docs/measurements/slice4-disk.md.
+  # Revert: none, superseded component versions can't be put back once removed; Windows itself
+  # removes them after 30 days, so nothing that would stay is lost.
+  - !powerShell:
+    command: '.\KutayModules\Invoke-KutayComponentCleanup.ps1'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}

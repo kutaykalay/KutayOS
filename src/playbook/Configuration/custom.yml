@@ -48,3 +48,10 @@ actions:
   - !task: {path: 'tweaks\shell\classic-context-menu.yml'}
   - !task: {path: 'tweaks\shell\hide-explorer-home-gallery.yml'}
   - !task: {path: 'tweaks\shell\hide-start-recommended.yml'}
+
+  # Cleanup before Compact OS, so the removed component versions are not compressed first.
+  - !writeStatus: {status: 'Freeing disk space, this can take several minutes'}
+  - !task: {path: 'tweaks\storage\disable-hibernation.yml'}
+  - !task: {path: 'tweaks\storage\disable-reserved-storage.yml'}
+  - !task: {path: 'tweaks\storage\component-cleanup.yml'}
+  - !task: {path: 'tweaks\storage\compact-os.yml'}

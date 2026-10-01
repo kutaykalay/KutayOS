@@ -50,4 +50,19 @@ Describe 'Tweak <Name>' -ForEach $tweaks {
             $match.Groups[1].Value | Should -Be $Id
         }
     }
+
+    It 'names its system state snapshot after the file' {
+        foreach ($match in [regex]::Matches($text, 'Set-KutaySystemState\.ps1\s+-Id\s+(\S+)')) {
+            $match.Groups[1].Value | Should -Be $Id
+        }
+    }
+
+    It 'explains why a one-way change has no revert' {
+        if ($text -notmatch '(?m)^\s*# Revert: none') { return }
+        $text | Should -Match '(?m)^\s*# Revert: none\b.{20,}' -Because 'a tweak without a revert must say why'
+    }
+
+    It 'names a revert or says there is none' {
+        $text | Should -Match '(?m)^\s*# Revert: (KutayDesktop\\Revert-KutayOS\.ps1 -Id \S+|none\b)'
+    }
 }

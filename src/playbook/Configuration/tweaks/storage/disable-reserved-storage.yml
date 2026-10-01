@@ -1,0 +1,18 @@
+---
+title: Reserved storage off
+description: Frees the space Windows keeps aside for updates (often about 7 GB). If the disk gets almost full, an update may then fail until space is freed
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/dism-storage-reserve
+  # Source: https://learn.microsoft.com/en-us/powershell/module/dism/set-windowsreservedstoragestate
+  # Evidence: documented. Set-WindowsReservedStorageState -State Disabled on the running system. It
+  # fails while a servicing operation uses the reserve ("wait for any servicing operations to
+  # complete"); the playbook already requires no pending updates. Windows only turns the reserve on
+  # where its policy passes (it was off on the 64 GB test VM until turned on by hand).
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-reserved-storage
+  - !powerShell:
+    command: '.\KutayModules\Set-KutaySystemState.ps1 -Id disable-reserved-storage -Kind ReservedStorage -State Disabled'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+    option: 'disable-reserved-storage'

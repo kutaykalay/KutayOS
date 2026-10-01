@@ -1,0 +1,17 @@
+---
+title: Hibernation off
+description: Deletes hiberfil.sys, which takes about 40% of the RAM size on disk. Hibernate and Fast Startup are no longer available; Sleep keeps working
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options#hibernate-or-h
+  # Source: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/compact-os#ram-pagefilesys-and-hiberfilsys
+  # Evidence: documented. powercfg /hibernate off disables hibernation and removes hiberfil.sys
+  # (Microsoft's table: 1.5 GB saved on a 4 GB x64 device). Fast Startup needs the hiberfile, so it
+  # turns off too. Not testable in the VM: its firmware does not support hibernation.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-hibernation
+  - !powerShell:
+    command: '.\KutayModules\Set-KutaySystemState.ps1 -Id disable-hibernation -Kind Hibernation -State Off'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+    option: 'disable-hibernation'
