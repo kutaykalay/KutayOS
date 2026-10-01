@@ -46,6 +46,8 @@ function Write-SmokeManifest([string]$Path) {
                 commands    = @(Get-KutayTweakCommand -Path $file)
                 changes     = @(Get-KutayTweakChange -Path $file)
                 userChanges = @(Get-KutayTweakUserChange -Path $file)
+                system      = @(Get-KutayTweakSystemChange -Path $file)
+                oneWay      = Test-KutayTweakOneWay -Path $file
             }
         })
     [IO.File]::WriteAllText($Path, (ConvertTo-Json -InputObject $tweaks -Depth 5))
@@ -81,7 +83,8 @@ try {
         $failed++
         Write-Output "FAIL only $reported of $count tweaks finished both passes"
     }
-    Write-Output "$(Get-Date -Format HH:mm:ss) $($lines.Count - $failed)/$($lines.Count) PASS, result in $OutFile"
+    $checks = @($lines | Where-Object { $_ -like 'PASS *' -or $_ -like 'FAIL *' }).Count
+    Write-Output "$(Get-Date -Format HH:mm:ss) $($checks - $failed)/$checks PASS, result in $OutFile"
     if ($failed) { exit 1 }
     exit 0
 } catch {

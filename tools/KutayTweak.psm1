@@ -11,6 +11,8 @@ $script:TaskPattern = "!task:\s*\{\s*path:\s*'([^']+)'"
 $script:CommandPattern = "(?m)^\s*command:\s*'((?:[^']|'')*)'\s*$"
 # Set-KutayUserSetting.ps1 -Setting 'path|name|type|data','...' (after YAML quote escapes are undone).
 $script:UserSettingPattern = "Set-KutayUserSetting\.ps1\b.*?-Setting\s+((?:'[^']*'\s*,?\s*)+)"
+$script:SystemStatePattern = 'Set-KutaySystemState\.ps1\b.*?-Kind\s+(\w+)\s+-State\s+(\w+)'
+$script:OneWayPattern = '(?m)^\s*# Revert: none\b'
 # Types a smoke run can compare as plain text. Add more when a tweak needs them.
 $script:CheckableTypes = 'REG_DWORD', 'REG_SZ'
 
@@ -49,10 +51,26 @@ function Get-KutayTweakUserChange {
     }
 }
 
+function Get-KutayTweakSystemChange {
+    param([Parameter(Mandatory)][string]$Path)
+    $id = [IO.Path]::GetFileNameWithoutExtension($Path)
+    foreach ($command in @(Get-KutayTweakCommand -Path $Path)) {
+        if ($command -notmatch $script:SystemStatePattern) { continue }
+        [pscustomobject]@{ id = $id; kind = $Matches[1]; state = $Matches[2] }
+    }
+}
+
+# A one-way tweak (its revert line says "none") keeps no snapshot.
+function Test-KutayTweakOneWay {
+    param([Parameter(Mandatory)][string]$Path)
+    (Get-Content -LiteralPath $Path -Raw) -match $script:OneWayPattern
+}
+
 function Get-KutayTaskPath {
     param([Parameter(Mandatory)][string]$Path)
     $text = Get-Content -LiteralPath $Path -Raw
     foreach ($match in [regex]::Matches($text, $script:TaskPattern)) { $match.Groups[1].Value }
 }
 
-Export-ModuleMember -Function Get-KutayTweakChange, Get-KutayTweakUserChange, Get-KutayTweakCommand, Get-KutayTaskPath
+Export-ModuleMember -Function Get-KutayTweakChange, Get-KutayTweakUserChange, Get-KutayTweakSystemChange,
+    Test-KutayTweakOneWay, Get-KutayTweakCommand, Get-KutayTaskPath

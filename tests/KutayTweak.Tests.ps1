@@ -90,6 +90,39 @@ Describe 'Get-KutayTweakUserChange' {
     }
 }
 
+Describe 'Get-KutayTweakSystemChange' {
+    It 'returns the kind and state a tweak sets' {
+        $file = Join-Path $TestDrive 'compact-thing.yml'
+        Set-Content -LiteralPath $file -Value "    command: '.\KutayModules\Set-KutaySystemState.ps1 -Id compact-thing -Kind CompactOS -State Always'"
+
+        $changes = @(Get-KutayTweakSystemChange -Path $file)
+
+        $changes.Count | Should -Be 1
+        $changes[0].id | Should -Be 'compact-thing'
+        $changes[0].kind | Should -Be 'CompactOS'
+        $changes[0].state | Should -Be 'Always'
+    }
+
+    It 'ignores commands that are not Set-KutaySystemState' {
+        $file = Join-Path $TestDrive 'other.yml'
+        Set-Content -LiteralPath $file -Value "    command: '.\KutayModules\Invoke-KutayComponentCleanup.ps1'"
+
+        @(Get-KutayTweakSystemChange -Path $file).Count | Should -Be 0
+    }
+}
+
+Describe 'Test-KutayTweakOneWay' {
+    It 'is <Expected> for a tweak whose revert line is <Line>' -ForEach @(
+        @{ Line = '# Revert: none, it can not be undone'; Expected = $true }
+        @{ Line = '# Revert: KutayDesktop\Revert-KutayOS.ps1 -Id x'; Expected = $false }
+    ) {
+        $file = Join-Path $TestDrive 'one-way.yml'
+        Set-Content -LiteralPath $file -Value "  $Line"
+
+        Test-KutayTweakOneWay -Path $file | Should -Be $Expected
+    }
+}
+
 Describe 'Get-KutayTaskPath' {
     It 'lists the task files a root task runs, in order' {
         $file = Join-Path $TestDrive 'custom.yml'
