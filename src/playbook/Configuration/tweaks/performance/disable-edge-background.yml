@@ -1,0 +1,18 @@
+---
+title: Edge does not run in the background
+description: Edge no longer starts at sign-in or keeps running after its last window closes. Edge itself opens a little slower. You can turn both back on in Edge settings (System and performance)
+actions:
+  # Source: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/startupboostenabled
+  # Source: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/backgroundmodeenabled
+  # Evidence: documented. Both policies start Edge processes at OS sign-in; disabled turns that off.
+  # Set as Recommended (SOFTWARE\Policies\Microsoft\Edge\Recommended), so the user can override it in
+  # edge://settings/system. Per machine, Edge 88+. WebView2 reads its own policy key and is not affected.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-edge-background
+  - !powerShell:
+    command: '.\KutayModules\Save-KutayState.ps1 -Id disable-edge-background -Registry ''HKLM\SOFTWARE\Policies\Microsoft\Edge\Recommended|StartupBoostEnabled'',''HKLM\SOFTWARE\Policies\Microsoft\Edge\Recommended|BackgroundModeEnabled'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Edge\Recommended', value: 'StartupBoostEnabled', type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Edge\Recommended', value: 'BackgroundModeEnabled', type: REG_DWORD, data: '0'}

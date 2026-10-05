@@ -12,7 +12,10 @@ $script:CommandPattern = "(?m)^\s*command:\s*'((?:[^']|'')*)'\s*$"
 # Set-KutayUserSetting.ps1 -Setting 'path|name|type|data','...' (after YAML quote escapes are undone).
 $script:UserSettingPattern = "Set-KutayUserSetting\.ps1\b.*?-Setting\s+((?:'[^']*'\s*,?\s*)+)"
 $script:SystemStatePattern = 'Set-KutaySystemState\.ps1\b.*?-Kind\s+(\w+)\s+-State\s+(\w+)'
+# Set-KutaySystemState.ps1 ... -Name '\Task\One','\Task\Two' (after YAML quote escapes are undone).
+$script:SystemNamePattern = "\s-Name\s+((?:'[^']*'\s*,?\s*)+)"
 $script:OneWayPattern = '(?m)^\s*# Revert: none\b'
+$script:OptionPattern = "(?m)^\s*option:\s*'"
 # Types a smoke run can compare as plain text. Add more when a tweak needs them.
 $script:CheckableTypes = 'REG_DWORD', 'REG_SZ'
 
@@ -56,7 +59,13 @@ function Get-KutayTweakSystemChange {
     $id = [IO.Path]::GetFileNameWithoutExtension($Path)
     foreach ($command in @(Get-KutayTweakCommand -Path $Path)) {
         if ($command -notmatch $script:SystemStatePattern) { continue }
-        [pscustomobject]@{ id = $id; kind = $Matches[1]; state = $Matches[2] }
+        $kind = $Matches[1]
+        $state = $Matches[2]
+        $names = @('')
+        if ($command -match $script:SystemNamePattern) {
+            $names = @([regex]::Matches($Matches[1], "'([^']*)'") | ForEach-Object { $_.Groups[1].Value })
+        }
+        foreach ($name in $names) { [pscustomobject]@{ id = $id; kind = $kind; state = $state; name = $name } }
     }
 }
 
@@ -66,6 +75,12 @@ function Test-KutayTweakOneWay {
     (Get-Content -LiteralPath $Path -Raw) -match $script:OneWayPattern
 }
 
+# A tweak behind a FeaturePages checkbox: its actions carry option: '<name>'.
+function Test-KutayTweakOption {
+    param([Parameter(Mandatory)][string]$Path)
+    (Get-Content -LiteralPath $Path -Raw) -match $script:OptionPattern
+}
+
 function Get-KutayTaskPath {
     param([Parameter(Mandatory)][string]$Path)
     $text = Get-Content -LiteralPath $Path -Raw
@@ -73,4 +88,4 @@ function Get-KutayTaskPath {
 }
 
 Export-ModuleMember -Function Get-KutayTweakChange, Get-KutayTweakUserChange, Get-KutayTweakSystemChange,
-    Test-KutayTweakOneWay, Get-KutayTweakCommand, Get-KutayTaskPath
+    Test-KutayTweakOneWay, Test-KutayTweakOption, Get-KutayTweakCommand, Get-KutayTaskPath

@@ -53,6 +53,34 @@ Describe 'Get-KutaySystemState' {
         }
     }
 
+    It 'reads a scheduled task as <Expected> when its state is <TaskState>' -ForEach @(
+        @{ TaskState = 'Ready'; Expected = 'Enabled' }
+        @{ TaskState = 'Running'; Expected = 'Enabled' }
+        @{ TaskState = 'Disabled'; Expected = 'Disabled' }
+    ) {
+        Mock -ModuleName KutaySystemState Get-ScheduledTask { [pscustomobject]@{ State = $TaskState } }
+
+        Get-KutaySystemState -Kind ScheduledTask -Name '\Microsoft\Windows\Test\Task' | Should -Be $Expected
+
+        Should -Invoke -ModuleName KutaySystemState Get-ScheduledTask -Times 1 -Exactly -ParameterFilter {
+            $TaskPath -eq '\Microsoft\Windows\Test\' -and $TaskName -eq 'Task'
+        }
+    }
+
+    It 'reads a scheduled task this Windows does not have as Absent' {
+        Mock -ModuleName KutaySystemState Get-ScheduledTask { }
+
+        Get-KutaySystemState -Kind ScheduledTask -Name '\Microsoft\Windows\Test\Gone' | Should -Be 'Absent'
+    }
+
+    It 'needs a task name for a scheduled task' {
+        { Get-KutaySystemState -Kind ScheduledTask } | Should -Throw '*Name*'
+    }
+
+    It 'rejects a task name that is not a full path' {
+        { Get-KutaySystemState -Kind ScheduledTask -Name 'Task' } | Should -Throw '*full path*'
+    }
+
     It 'rejects an unknown kind' {
         { Get-KutaySystemState -Kind Pagefile } | Should -Throw
     }
@@ -104,6 +132,54 @@ Describe 'Set-KutaySystemState' {
         Set-KutaySystemState -Kind Hibernation -State Off
 
         Should -Invoke -ModuleName KutaySystemState Invoke-KutayNativeCommand -Times 0 -Exactly
+    }
+
+    It 'disables a scheduled task' {
+        $script:current = 'Enabled'
+        $script:after = 'Disabled'
+        Mock -ModuleName KutaySystemState Disable-ScheduledTask { $script:current = $script:after }
+
+        Set-KutaySystemState -Kind ScheduledTask -Name '\Microsoft\Windows\Test\Task' -State Disabled
+
+        Should -Invoke -ModuleName KutaySystemState Disable-ScheduledTask -Times 1 -Exactly -ParameterFilter {
+            $TaskPath -eq '\Microsoft\Windows\Test\' -and $TaskName -eq 'Task'
+        }
+    }
+
+    It 'enables a scheduled task' {
+        $script:current = 'Disabled'
+        $script:after = 'Enabled'
+        Mock -ModuleName KutaySystemState Enable-ScheduledTask { $script:current = $script:after }
+
+        Set-KutaySystemState -Kind ScheduledTask -Name '\Microsoft\Windows\Test\Task' -State Enabled
+
+        Should -Invoke -ModuleName KutaySystemState Enable-ScheduledTask -Times 1 -Exactly
+    }
+
+    It 'skips a scheduled task this Windows does not have, with a warning' {
+        $script:current = 'Absent'
+        Mock -ModuleName KutaySystemState Disable-ScheduledTask { }
+
+        Set-KutaySystemState -Kind ScheduledTask -Name '\Microsoft\Windows\Test\Gone' -State Disabled -WarningVariable warned -WarningAction SilentlyContinue
+
+        Should -Invoke -ModuleName KutaySystemState Disable-ScheduledTask -Times 0 -Exactly
+        "$warned" | Should -BeLike '*Gone*'
+    }
+
+    It 'leaves a task alone when the snapshot recorded it as absent' {
+        $script:current = 'Disabled'
+        Mock -ModuleName KutaySystemState Enable-ScheduledTask { }
+
+        Set-KutaySystemState -Kind ScheduledTask -Name '\Microsoft\Windows\Test\New' -State Absent -WarningAction SilentlyContinue
+
+        Should -Invoke -ModuleName KutaySystemState Enable-ScheduledTask -Times 0 -Exactly
+    }
+
+    It 'fails when the scheduled task stayed enabled' {
+        $script:current = 'Enabled'
+        Mock -ModuleName KutaySystemState Disable-ScheduledTask { }
+
+        { Set-KutaySystemState -Kind ScheduledTask -Name '\Microsoft\Windows\Test\Task' -State Disabled } | Should -Throw '*still Enabled*'
     }
 
     It 'rejects a state that does not belong to the kind' {

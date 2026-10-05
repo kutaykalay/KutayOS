@@ -101,6 +101,20 @@ Describe 'Get-KutayTweakSystemChange' {
         $changes[0].id | Should -Be 'compact-thing'
         $changes[0].kind | Should -Be 'CompactOS'
         $changes[0].state | Should -Be 'Always'
+        $changes[0].name | Should -BeNullOrEmpty
+    }
+
+    It 'returns one change per scheduled task name' {
+        $file = Join-Path $TestDrive 'task-thing.yml'
+        Set-Content -LiteralPath $file -Value "    command: '.\KutayModules\Set-KutaySystemState.ps1 -Id task-thing -Kind ScheduledTask -State Disabled -Name ''\A\One'',''\B C\Two'''"
+
+        $changes = @(Get-KutayTweakSystemChange -Path $file)
+
+        $changes.Count | Should -Be 2
+        $changes[0].kind | Should -Be 'ScheduledTask'
+        $changes[0].state | Should -Be 'Disabled'
+        $changes[0].name | Should -Be '\A\One'
+        $changes[1].name | Should -Be '\B C\Two'
     }
 
     It 'ignores commands that are not Set-KutaySystemState' {
@@ -160,5 +174,17 @@ Describe 'Playbook wiring' {
         foreach ($page in $pages) { @($page.Options.ChildNodes | Where-Object { $_.NodeType -eq 'Element' }).Count | Should -BeLessOrEqual 4 }
         foreach ($option in $used) { $offered | Should -Contain $option }
         foreach ($option in $offered) { $used | Should -Contain $option -Because 'an option nothing uses does nothing' }
+    }
+}
+
+Describe 'Test-KutayTweakOption' {
+    It 'is <Expected> for a tweak with <Line>' -ForEach @(
+        @{ Line = "    option: 'compact-os'"; Expected = $true }
+        @{ Line = '    handleExitCodes: {"!0": halt}'; Expected = $false }
+    ) {
+        $file = Join-Path $TestDrive 'option.yml'
+        Set-Content -LiteralPath $file -Value $Line
+
+        Test-KutayTweakOption -Path $file | Should -Be $Expected
     }
 }

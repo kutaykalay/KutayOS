@@ -1,0 +1,18 @@
+---
+title: Telemetry service off
+description: Stops the Connected User Experiences and Telemetry service (DiagTrack) from starting, which saves one background process. Diagnostic data is already off by policy
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server
+  # Source: https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/blob/main/2009/ConfigurationFiles/Services.json
+  # Evidence: measured (see docs/measurements/slice5). Microsoft describes DiagTrack as the service
+  # that collects and sends diagnostic data and gives "No guidance" on disabling it; Microsoft's VDI
+  # tool sets it to Disabled. Windows Update, Defender and search don't depend on it. Start=4 is
+  # Disabled; the service stops at the next restart. Runs after disable-telemetry.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-diagtrack-service
+  - !powerShell:
+    command: '.\KutayModules\Save-KutayState.ps1 -Id disable-diagtrack-service -Registry ''HKLM\SYSTEM\CurrentControlSet\Services\DiagTrack|Start'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\DiagTrack', value: 'Start', type: REG_DWORD, data: '4'}

@@ -17,7 +17,14 @@ param(
     # Memory for this boot; 4 GB fits the dev host's commit limit and is plenty without a logon. 0 keeps the snapshot's.
     [int]$MemoryMB = 4096,
     # Use the VM as it runs now; only when it was just reverted to the snapshot and nothing ran since.
-    [switch]$NoReset
+    [switch]$NoReset,
+    # Apply the default tweaks once (no revert, no FeaturePages options), shut the VM down and save it
+    # as this snapshot, for performance measurements of the applied playbook.
+    [string]$SaveAppliedAs = '',
+    # With -SaveAppliedAs: apply nothing, only let the VM run as long as applying takes and save it.
+    # The control for the applied snapshot: both have booted once after the revert and shut down.
+    [switch]$Control,
+    [int]$ControlMinutes = 10
 )
 
 $ErrorActionPreference = 'Stop'
@@ -48,6 +55,7 @@ function Write-SmokeManifest([string]$Path) {
                 userChanges = @(Get-KutayTweakUserChange -Path $file)
                 system      = @(Get-KutayTweakSystemChange -Path $file)
                 oneWay      = Test-KutayTweakOneWay -Path $file
+                option      = Test-KutayTweakOption -Path $file
             }
         })
     [IO.File]::WriteAllText($Path, (ConvertTo-Json -InputObject $tweaks -Depth 5))
@@ -70,6 +78,28 @@ try {
 
     Copy-ItemToGuest $Vmx (Join-Path $playbook 'Executables') "$guestRoot\Executables"
     Copy-ItemToGuest $Vmx $manifest "$guestRoot\manifest.json"
+    if ($SaveAppliedAs -and $Control) {
+        Write-Output "$(Get-Date -Format HH:mm:ss) control: running $ControlMinutes min without tweaks"
+        Start-Sleep -Seconds ($ControlMinutes * 60)
+        Save-TestVmSnapshot -Vmx $Vmx -Snapshot $SaveAppliedAs
+        Write-Output "$(Get-Date -Format HH:mm:ss) saved snapshot $SaveAppliedAs"
+        exit 0
+    }
+    if ($SaveAppliedAs) {
+        Write-Output "$(Get-Date -Format HH:mm:ss) applying the default tweaks"
+        Invoke-GuestScript -Vmx $Vmx -ScriptPath (Join-Path $PSScriptRoot 'guest-smoke-tweaks.ps1') `
+            -GuestResult "$guestRoot\result.txt" -LocalResult $OutFile -ScriptArgs '-ApplyOnly'
+        $lines = @(Get-Content -LiteralPath $OutFile)
+        $lines
+        if (@($lines | Where-Object { $_ -like 'FAIL *' }).Count -or -not @($lines | Where-Object { $_ -like 'PASS applied *' }).Count) {
+            throw 'applying the tweaks failed; no snapshot saved'
+        }
+        # The guest shuts down cleanly, so the snapshot boots like a PC after the playbook's restart.
+        Save-TestVmSnapshot -Vmx $Vmx -Snapshot $SaveAppliedAs
+        Write-Output "$(Get-Date -Format HH:mm:ss) saved snapshot $SaveAppliedAs"
+        exit 0
+    }
+
     Write-Output "$(Get-Date -Format HH:mm:ss) running the guest smoke script"
     Invoke-GuestScript -Vmx $Vmx -ScriptPath (Join-Path $PSScriptRoot 'guest-smoke-tweaks.ps1') `
         -GuestResult "$guestRoot\result.txt" -LocalResult $OutFile

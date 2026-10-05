@@ -127,15 +127,21 @@ function Save-KutaySnapshot {
     Write-SnapshotFile $file ([ordered]@{ id = $Id; createdAt = (Get-Date).ToString($script:TimeFormat); registry = $values })
 }
 
-# Records the current state of a system kind (see KutaySystemState.psm1). The first snapshot wins.
+# Records the current state of a system kind (see KutaySystemState.psm1), one entry per -Name for kinds
+# that name an item (scheduled tasks). The first snapshot wins.
 function Save-KutaySystemSnapshot {
     param(
         [Parameter(Mandatory)][AllowEmptyString()][string]$Id,
-        [Parameter(Mandatory)][ValidateSet('Hibernation', 'CompactOS', 'ReservedStorage')][string]$Kind
+        [Parameter(Mandatory)][ValidateSet('Hibernation', 'CompactOS', 'ReservedStorage', 'ScheduledTask')][string]$Kind,
+        [string[]]$Name = @('')
     )
     $file = Get-SnapshotFile $Id
     if (Test-Path -LiteralPath $file) { return }
-    $system = @([ordered]@{ kind = $Kind; state = (Get-KutaySystemState -Kind $Kind) })
+    $system = @($Name | ForEach-Object {
+            $entry = [ordered]@{ kind = $Kind; state = (Get-KutaySystemState -Kind $Kind -Name $_) }
+            if ($_) { $entry.name = $_ }
+            $entry
+        })
     Write-SnapshotFile $file ([ordered]@{ id = $Id; createdAt = (Get-Date).ToString($script:TimeFormat); registry = @(); system = $system })
 }
 
@@ -323,7 +329,11 @@ function Restore-KutaySnapshot {
     # Snapshots from before per-user support have no users list.
     if ($snapshot.PSObject.Properties['users'] -and @($snapshot.users).Count) { Restore-KutayUserItem @($snapshot.users) }
     if ($snapshot.PSObject.Properties['system']) {
-        foreach ($item in @($snapshot.system)) { Set-KutaySystemState -Kind $item.kind -State $item.state }
+        foreach ($item in @($snapshot.system)) {
+            $name = ''
+            if ($item.PSObject.Properties['name']) { $name = $item.name }
+            Set-KutaySystemState -Kind $item.kind -State $item.state -Name $name
+        }
     }
     # Only forget the snapshot once every value is back, so a failed revert can be retried.
     Remove-Item -LiteralPath $file

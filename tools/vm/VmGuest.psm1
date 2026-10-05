@@ -84,5 +84,19 @@ function Invoke-TestVmReset([string]$Vmx, [string]$Snapshot, [int]$MemoryMB = 0)
     Start-Process -FilePath $workstation -ArgumentList "`"$Vmx`""
 }
 
+# Shuts the guest down cleanly and saves the powered-off VM as a snapshot. An existing snapshot with
+# that name is replaced, so the measurement scripts always find exactly one.
+function Save-TestVmSnapshot([string]$Vmx, [string]$Snapshot) {
+    & $script:Vmrun -T ws -vp $env:KUTAY_VM_PASS stop $Vmx soft
+    if ($LASTEXITCODE -ne 0) { throw "vmrun stop failed ($LASTEXITCODE)" }
+    $existing = & $script:Vmrun -T ws -vp $env:KUTAY_VM_PASS listSnapshots $Vmx
+    if (@($existing | Select-Object -Skip 1) -contains $Snapshot) {
+        & $script:Vmrun -T ws -vp $env:KUTAY_VM_PASS deleteSnapshot $Vmx $Snapshot
+        if ($LASTEXITCODE -ne 0) { throw "vmrun deleteSnapshot $Snapshot failed ($LASTEXITCODE)" }
+    }
+    & $script:Vmrun -T ws -vp $env:KUTAY_VM_PASS snapshot $Vmx $Snapshot
+    if ($LASTEXITCODE -ne 0) { throw "vmrun snapshot $Snapshot failed ($LASTEXITCODE)" }
+}
+
 Export-ModuleMember -Function Get-DefaultVmx, Get-VmToolsState, Test-GuestDesktop, Invoke-GuestScript,
-    Copy-ItemToGuest, Invoke-TestVmReset
+    Copy-ItemToGuest, Invoke-TestVmReset, Save-TestVmSnapshot

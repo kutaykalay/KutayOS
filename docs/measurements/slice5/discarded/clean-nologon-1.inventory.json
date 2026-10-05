@@ -1,0 +1,3224 @@
+{
+    "collectedAt":  "2026-10-01T16:58:36",
+    "uptimeMin":  28.6,
+    "ramTotalMB":  4095,
+    "interactiveSessions":  0,
+    "runningServices":  [
+                            {
+                                "name":  "AppIDSvc",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  1464,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.7,
+                                "workingSetMB":  9.5
+                            },
+                            {
+                                "name":  "AppXSvc",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  5192,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  5.1,
+                                "workingSetMB":  14.9
+                            },
+                            {
+                                "name":  "AudioEndpointBuilder",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  2116,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.9,
+                                "workingSetMB":  11.2
+                            },
+                            {
+                                "name":  "Audiosrv",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  2296,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  2.6,
+                                "workingSetMB":  16.7
+                            },
+                            {
+                                "name":  "BFE",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  2932,
+                                "sharedWith":  [
+                                                   "mpssvc"
+                                               ],
+                                "privateMB":  9.7,
+                                "workingSetMB":  20.7
+                            },
+                            {
+                                "name":  "BITS",
+                                "startMode":  "Auto",
+                                "delayed":  true,
+                                "pid":  3016,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  9.2,
+                                "workingSetMB":  24.7
+                            },
+                            {
+                                "name":  "BrokerInfrastructure",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  956,
+                                "sharedWith":  [
+                                                   "DcomLaunch",
+                                                   "PlugPlay",
+                                                   "Power",
+                                                   "SystemEventsBroker"
+                                               ],
+                                "privateMB":  5.3,
+                                "workingSetMB":  20
+                            },
+                            {
+                                "name":  "camsvc",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  3224,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  2.6,
+                                "workingSetMB":  15.9
+                            },
+                            {
+                                "name":  "CDPSvc",
+                                "startMode":  "Auto",
+                                "delayed":  true,
+                                "pid":  4500,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  4.9,
+                                "workingSetMB":  22.4
+                            },
+                            {
+                                "name":  "COMSysApp",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  836,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  4.3,
+                                "workingSetMB":  16.7
+                            },
+                            {
+                                "name":  "CoreMessagingRegistrar",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  1200,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.3,
+                                "workingSetMB":  7.5
+                            },
+                            {
+                                "name":  "CryptSvc",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  1176,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  4.7,
+                                "workingSetMB":  23.1
+                            },
+                            {
+                                "name":  "DcomLaunch",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  956,
+                                "sharedWith":  [
+                                                   "BrokerInfrastructure",
+                                                   "PlugPlay",
+                                                   "Power",
+                                                   "SystemEventsBroker"
+                                               ],
+                                "privateMB":  5.3,
+                                "workingSetMB":  20
+                            },
+                            {
+                                "name":  "Dhcp",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  2236,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  2.2,
+                                "workingSetMB":  10.2
+                            },
+                            {
+                                "name":  "DiagTrack",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  3232,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  25.1,
+                                "workingSetMB":  51.8
+                            },
+                            {
+                                "name":  "DispBrokerDesktopSvc",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  1568,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.4,
+                                "workingSetMB":  8.9
+                            },
+                            {
+                                "name":  "Dnscache",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  1576,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  2.9,
+                                "workingSetMB":  10.8
+                            },
+                            {
+                                "name":  "DoSvc",
+                                "startMode":  "Auto",
+                                "delayed":  true,
+                                "pid":  5512,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  7,
+                                "workingSetMB":  27.6
+                            },
+                            {
+                                "name":  "DPS",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  3244,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  11.5,
+                                "workingSetMB":  21.4
+                            },
+                            {
+                                "name":  "DsSvc",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  4936,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  6.3,
+                                "workingSetMB":  13.7
+                            },
+                            {
+                                "name":  "DusmSvc",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  2516,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.4,
+                                "workingSetMB":  8
+                            },
+                            {
+                                "name":  "EventLog",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  1872,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  14.9,
+                                "workingSetMB":  17.3
+                            },
+                            {
+                                "name":  "EventSystem",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  1928,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  3,
+                                "workingSetMB":  11.5
+                            },
+                            {
+                                "name":  "FontCache",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  2124,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.6,
+                                "workingSetMB":  9
+                            },
+                            {
+                                "name":  "gpsvc",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  1944,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.9,
+                                "workingSetMB":  9.6
+                            },
+                            {
+                                "name":  "InstallService",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  5164,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  5.6,
+                                "workingSetMB":  29.2
+                            },
+                            {
+                                "name":  "InventorySvc",
+                                "startMode":  "Auto",
+                                "delayed":  true,
+                                "pid":  924,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  2,
+                                "workingSetMB":  10.7
+                            },
+                            {
+                                "name":  "iphlpsvc",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  3252,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  2.9,
+                                "workingSetMB":  15
+                            },
+                            {
+                                "name":  "KeyIso",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  840,
+                                "sharedWith":  [
+                                                   "SamSs",
+                                                   "VaultSvc"
+                                               ],
+                                "privateMB":  6.6,
+                                "workingSetMB":  24.5
+                            },
+                            {
+                                "name":  "LanmanServer",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  3320,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  2.4,
+                                "workingSetMB":  12.3
+                            },
+                            {
+                                "name":  "LanmanWorkstation",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  2948,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.9,
+                                "workingSetMB":  10.2
+                            },
+                            {
+                                "name":  "lfsvc",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  4836,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  4.1,
+                                "workingSetMB":  29
+                            },
+                            {
+                                "name":  "LicenseManager",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  4532,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  3.2,
+                                "workingSetMB":  21.9
+                            },
+                            {
+                                "name":  "lmhosts",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  1208,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.3,
+                                "workingSetMB":  6.9
+                            },
+                            {
+                                "name":  "LSM",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  528,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  2.1,
+                                "workingSetMB":  10.3
+                            },
+                            {
+                                "name":  "MDCoreSvc",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  3360,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  8.7,
+                                "workingSetMB":  27.5
+                            },
+                            {
+                                "name":  "mpssvc",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  2932,
+                                "sharedWith":  [
+                                                   "BFE"
+                                               ],
+                                "privateMB":  9.7,
+                                "workingSetMB":  20.7
+                            },
+                            {
+                                "name":  "MSDTC",
+                                "startMode":  "Manual",
+                                "delayed":  true,
+                                "pid":  4384,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  3,
+                                "workingSetMB":  12.2
+                            },
+                            {
+                                "name":  "NcbService",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  1368,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.9,
+                                "workingSetMB":  11.2
+                            },
+                            {
+                                "name":  "netprofm",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  1680,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  4.1,
+                                "workingSetMB":  18.7
+                            },
+                            {
+                                "name":  "nsi",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  1556,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  3.7,
+                                "workingSetMB":  8.4
+                            },
+                            {
+                                "name":  "PcaSvc",
+                                "startMode":  "Auto",
+                                "delayed":  true,
+                                "pid":  2060,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  3,
+                                "workingSetMB":  13.5
+                            },
+                            {
+                                "name":  "PlugPlay",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  956,
+                                "sharedWith":  [
+                                                   "BrokerInfrastructure",
+                                                   "DcomLaunch",
+                                                   "Power",
+                                                   "SystemEventsBroker"
+                                               ],
+                                "privateMB":  5.3,
+                                "workingSetMB":  20
+                            },
+                            {
+                                "name":  "Power",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  956,
+                                "sharedWith":  [
+                                                   "BrokerInfrastructure",
+                                                   "DcomLaunch",
+                                                   "PlugPlay",
+                                                   "SystemEventsBroker"
+                                               ],
+                                "privateMB":  5.3,
+                                "workingSetMB":  20
+                            },
+                            {
+                                "name":  "ProfSvc",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  1432,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  2.6,
+                                "workingSetMB":  13.9
+                            },
+                            {
+                                "name":  "RmSvc",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  2364,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.9,
+                                "workingSetMB":  10.5
+                            },
+                            {
+                                "name":  "RpcEptMapper",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  516,
+                                "sharedWith":  [
+                                                   "RpcSs"
+                                               ],
+                                "privateMB":  4.2,
+                                "workingSetMB":  13.3
+                            },
+                            {
+                                "name":  "RpcSs",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  516,
+                                "sharedWith":  [
+                                                   "RpcEptMapper"
+                                               ],
+                                "privateMB":  4.2,
+                                "workingSetMB":  13.3
+                            },
+                            {
+                                "name":  "SamSs",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  840,
+                                "sharedWith":  [
+                                                   "KeyIso",
+                                                   "VaultSvc"
+                                               ],
+                                "privateMB":  6.6,
+                                "workingSetMB":  24.5
+                            },
+                            {
+                                "name":  "Schedule",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  1440,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  5.4,
+                                "workingSetMB":  16
+                            },
+                            {
+                                "name":  "SecurityHealthService",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  5628,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  12.4,
+                                "workingSetMB":  22.6
+                            },
+                            {
+                                "name":  "SENS",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  728,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.3,
+                                "workingSetMB":  7.5
+                            },
+                            {
+                                "name":  "ShellHWDetection",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  2740,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  3.2,
+                                "workingSetMB":  16
+                            },
+                            {
+                                "name":  "Spooler",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  2832,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  5.6,
+                                "workingSetMB":  19
+                            },
+                            {
+                                "name":  "SSDPSRV",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  4756,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  2.1,
+                                "workingSetMB":  10.1
+                            },
+                            {
+                                "name":  "StateRepository",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  2652,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  4.8,
+                                "workingSetMB":  15.1
+                            },
+                            {
+                                "name":  "StorSvc",
+                                "startMode":  "Auto",
+                                "delayed":  true,
+                                "pid":  4956,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  2.3,
+                                "workingSetMB":  13.2
+                            },
+                            {
+                                "name":  "SysMain",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  1936,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  2.4,
+                                "workingSetMB":  12.1
+                            },
+                            {
+                                "name":  "SystemEventsBroker",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  956,
+                                "sharedWith":  [
+                                                   "BrokerInfrastructure",
+                                                   "DcomLaunch",
+                                                   "PlugPlay",
+                                                   "Power"
+                                               ],
+                                "privateMB":  5.3,
+                                "workingSetMB":  20
+                            },
+                            {
+                                "name":  "TextInputManagementService",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  2404,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.7,
+                                "workingSetMB":  10.2
+                            },
+                            {
+                                "name":  "Themes",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  1948,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.2,
+                                "workingSetMB":  7.4
+                            },
+                            {
+                                "name":  "TimeBrokerSvc",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  1360,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.6,
+                                "workingSetMB":  7.7
+                            },
+                            {
+                                "name":  "TokenBroker",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  4648,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.6,
+                                "workingSetMB":  11.2
+                            },
+                            {
+                                "name":  "TrkWks",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  3340,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.3,
+                                "workingSetMB":  7.5
+                            },
+                            {
+                                "name":  "UserManager",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  1596,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.9,
+                                "workingSetMB":  11.3
+                            },
+                            {
+                                "name":  "UsoSvc",
+                                "startMode":  "Auto",
+                                "delayed":  true,
+                                "pid":  4896,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  3.3,
+                                "workingSetMB":  16.2
+                            },
+                            {
+                                "name":  "VaultSvc",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  840,
+                                "sharedWith":  [
+                                                   "KeyIso",
+                                                   "SamSs"
+                                               ],
+                                "privateMB":  6.6,
+                                "workingSetMB":  24.5
+                            },
+                            {
+                                "name":  "VGAuthService",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  3368,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  3,
+                                "workingSetMB":  13.2
+                            },
+                            {
+                                "name":  "VM3DService",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  3392,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.9,
+                                "workingSetMB":  9.1
+                            },
+                            {
+                                "name":  "VMTools",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  3400,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  9.6,
+                                "workingSetMB":  22.8
+                            },
+                            {
+                                "name":  "W32Time",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  1084,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.8,
+                                "workingSetMB":  11
+                            },
+                            {
+                                "name":  "Wcmsvc",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  2660,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  2.2,
+                                "workingSetMB":  12.1
+                            },
+                            {
+                                "name":  "WdiSystemHost",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  5636,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.6,
+                                "workingSetMB":  8.9
+                            },
+                            {
+                                "name":  "WdNisSvc",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  5032,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  4.1,
+                                "workingSetMB":  13.4
+                            },
+                            {
+                                "name":  "whesvc",
+                                "startMode":  "Auto",
+                                "delayed":  true,
+                                "pid":  5660,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  6.7,
+                                "workingSetMB":  18.9
+                            },
+                            {
+                                "name":  "WinDefend",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  3464,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  313,
+                                "workingSetMB":  324.2
+                            },
+                            {
+                                "name":  "WinHttpAutoProxySvc",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  2544,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.9,
+                                "workingSetMB":  9.9
+                            },
+                            {
+                                "name":  "Winmgmt",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  3408,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  9.9,
+                                "workingSetMB":  23.4
+                            },
+                            {
+                                "name":  "wmiApSrv",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  4216,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.9,
+                                "workingSetMB":  11.6
+                            },
+                            {
+                                "name":  "WpnService",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  3420,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  4.3,
+                                "workingSetMB":  24.6
+                            },
+                            {
+                                "name":  "WSAIFabricSvc",
+                                "startMode":  "Auto",
+                                "delayed":  false,
+                                "pid":  3440,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.6,
+                                "workingSetMB":  9.8
+                            },
+                            {
+                                "name":  "wscsvc",
+                                "startMode":  "Auto",
+                                "delayed":  true,
+                                "pid":  4048,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  3,
+                                "workingSetMB":  13.3
+                            },
+                            {
+                                "name":  "WSearch",
+                                "startMode":  "Auto",
+                                "delayed":  true,
+                                "pid":  6120,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  14.4,
+                                "workingSetMB":  30.5
+                            },
+                            {
+                                "name":  "wuauserv",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  3480,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  8.5,
+                                "workingSetMB":  22.9
+                            },
+                            {
+                                "name":  "wuqisvc",
+                                "startMode":  "Manual",
+                                "delayed":  false,
+                                "pid":  3476,
+                                "sharedWith":  [
+
+                                               ],
+                                "privateMB":  1.4,
+                                "workingSetMB":  9
+                            }
+                        ],
+    "processes":  [
+                      {
+                          "name":  "AggregatorHost.exe",
+                          "pid":  3508,
+                          "privateMB":  2,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "cmd.exe",
+                          "pid":  4804,
+                          "privateMB":  5.7,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "conhost.exe",
+                          "pid":  4012,
+                          "privateMB":  1.7,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "csrss.exe",
+                          "pid":  580,
+                          "privateMB":  2,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "csrss.exe",
+                          "pid":  692,
+                          "privateMB":  1.8,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "dllhost.exe",
+                          "pid":  836,
+                          "privateMB":  4.3,
+                          "services":  [
+                                           "COMSysApp"
+                                       ]
+                      },
+                      {
+                          "name":  "dwm.exe",
+                          "pid":  1044,
+                          "privateMB":  17.1,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "fontdrvhost.exe",
+                          "pid":  968,
+                          "privateMB":  1.5,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "fontdrvhost.exe",
+                          "pid":  976,
+                          "privateMB":  1.3,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "LogonUI.exe",
+                          "pid":  1036,
+                          "privateMB":  16.7,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "lsass.exe",
+                          "pid":  840,
+                          "privateMB":  6.6,
+                          "services":  [
+                                           "KeyIso",
+                                           "SamSs",
+                                           "VaultSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "Memory Compression",
+                          "pid":  2084,
+                          "privateMB":  0.3,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "MicrosoftEdgeUpdate.exe",
+                          "pid":  1532,
+                          "privateMB":  2.8,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "MpDefenderCoreService.exe",
+                          "pid":  3360,
+                          "privateMB":  8.7,
+                          "services":  [
+                                           "MDCoreSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "msdtc.exe",
+                          "pid":  4384,
+                          "privateMB":  3,
+                          "services":  [
+                                           "MSDTC"
+                                       ]
+                      },
+                      {
+                          "name":  "MsMpEng.exe",
+                          "pid":  3464,
+                          "privateMB":  313,
+                          "services":  [
+                                           "WinDefend"
+                                       ]
+                      },
+                      {
+                          "name":  "NisSrv.exe",
+                          "pid":  5032,
+                          "privateMB":  4.1,
+                          "services":  [
+                                           "WdNisSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "powershell.exe",
+                          "pid":  4352,
+                          "privateMB":  68,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "Registry",
+                          "pid":  96,
+                          "privateMB":  0.6,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "SearchIndexer.exe",
+                          "pid":  6120,
+                          "privateMB":  14.4,
+                          "services":  [
+                                           "WSearch"
+                                       ]
+                      },
+                      {
+                          "name":  "SearchProtocolHost.exe",
+                          "pid":  5384,
+                          "privateMB":  3,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "SecurityHealthService.exe",
+                          "pid":  5628,
+                          "privateMB":  12.4,
+                          "services":  [
+                                           "SecurityHealthService"
+                                       ]
+                      },
+                      {
+                          "name":  "services.exe",
+                          "pid":  820,
+                          "privateMB":  4.5,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "smss.exe",
+                          "pid":  416,
+                          "privateMB":  1.1,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "spoolsv.exe",
+                          "pid":  2832,
+                          "privateMB":  5.6,
+                          "services":  [
+                                           "Spooler"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1464,
+                          "privateMB":  1.7,
+                          "services":  [
+                                           "AppIDSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  2060,
+                          "privateMB":  3,
+                          "services":  [
+                                           "PcaSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  2404,
+                          "privateMB":  1.7,
+                          "services":  [
+                                           "TextInputManagementService"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  5164,
+                          "privateMB":  5.6,
+                          "services":  [
+                                           "InstallService"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1872,
+                          "privateMB":  14.9,
+                          "services":  [
+                                           "EventLog"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  3232,
+                          "privateMB":  25.1,
+                          "services":  [
+                                           "DiagTrack"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  3244,
+                          "privateMB":  11.5,
+                          "services":  [
+                                           "DPS"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  3016,
+                          "privateMB":  9.2,
+                          "services":  [
+                                           "BITS"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  4956,
+                          "privateMB":  2.3,
+                          "services":  [
+                                           "StorSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  2652,
+                          "privateMB":  4.8,
+                          "services":  [
+                                           "StateRepository"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  2364,
+                          "privateMB":  1.9,
+                          "services":  [
+                                           "RmSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  4532,
+                          "privateMB":  3.2,
+                          "services":  [
+                                           "LicenseManager"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1596,
+                          "privateMB":  1.9,
+                          "services":  [
+                                           "UserManager"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  2516,
+                          "privateMB":  1.4,
+                          "services":  [
+                                           "DusmSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  3408,
+                          "privateMB":  9.9,
+                          "services":  [
+                                           "Winmgmt"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1432,
+                          "privateMB":  2.6,
+                          "services":  [
+                                           "ProfSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1576,
+                          "privateMB":  2.9,
+                          "services":  [
+                                           "Dnscache"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1208,
+                          "privateMB":  1.3,
+                          "services":  [
+                                           "lmhosts"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  956,
+                          "privateMB":  5.3,
+                          "services":  [
+                                           "BrokerInfrastructure",
+                                           "DcomLaunch",
+                                           "PlugPlay",
+                                           "Power",
+                                           "SystemEventsBroker"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  5192,
+                          "privateMB":  5.1,
+                          "services":  [
+                                           "AppXSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  3420,
+                          "privateMB":  4.3,
+                          "services":  [
+                                           "WpnService"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  3224,
+                          "privateMB":  2.6,
+                          "services":  [
+                                           "camsvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  2236,
+                          "privateMB":  2.2,
+                          "services":  [
+                                           "Dhcp"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1200,
+                          "privateMB":  1.3,
+                          "services":  [
+                                           "CoreMessagingRegistrar"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1440,
+                          "privateMB":  5.4,
+                          "services":  [
+                                           "Schedule"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  4756,
+                          "privateMB":  2.1,
+                          "services":  [
+                                           "SSDPSRV"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  3252,
+                          "privateMB":  2.9,
+                          "services":  [
+                                           "iphlpsvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  4896,
+                          "privateMB":  3.3,
+                          "services":  [
+                                           "UsoSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1368,
+                          "privateMB":  1.9,
+                          "services":  [
+                                           "NcbService"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  2544,
+                          "privateMB":  1.9,
+                          "services":  [
+                                           "WinHttpAutoProxySvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  2660,
+                          "privateMB":  2.2,
+                          "services":  [
+                                           "Wcmsvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1928,
+                          "privateMB":  3,
+                          "services":  [
+                                           "EventSystem"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  3340,
+                          "privateMB":  1.3,
+                          "services":  [
+                                           "TrkWks"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  2116,
+                          "privateMB":  1.9,
+                          "services":  [
+                                           "AudioEndpointBuilder"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  2124,
+                          "privateMB":  1.6,
+                          "services":  [
+                                           "FontCache"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  3440,
+                          "privateMB":  1.6,
+                          "services":  [
+                                           "WSAIFabricSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1936,
+                          "privateMB":  2.4,
+                          "services":  [
+                                           "SysMain"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1948,
+                          "privateMB":  1.2,
+                          "services":  [
+                                           "Themes"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  2932,
+                          "privateMB":  9.7,
+                          "services":  [
+                                           "BFE",
+                                           "mpssvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1360,
+                          "privateMB":  1.6,
+                          "services":  [
+                                           "TimeBrokerSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1556,
+                          "privateMB":  3.7,
+                          "services":  [
+                                           "nsi"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1084,
+                          "privateMB":  1.8,
+                          "services":  [
+                                           "W32Time"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  2740,
+                          "privateMB":  3.2,
+                          "services":  [
+                                           "ShellHWDetection"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  4500,
+                          "privateMB":  4.9,
+                          "services":  [
+                                           "CDPSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1944,
+                          "privateMB":  1.9,
+                          "services":  [
+                                           "gpsvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  3320,
+                          "privateMB":  2.4,
+                          "services":  [
+                                           "LanmanServer"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  5636,
+                          "privateMB":  1.6,
+                          "services":  [
+                                           "WdiSystemHost"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  4648,
+                          "privateMB":  1.6,
+                          "services":  [
+                                           "TokenBroker"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  5660,
+                          "privateMB":  6.7,
+                          "services":  [
+                                           "whesvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  516,
+                          "privateMB":  4.2,
+                          "services":  [
+                                           "RpcEptMapper",
+                                           "RpcSs"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  4836,
+                          "privateMB":  4.1,
+                          "services":  [
+                                           "lfsvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1680,
+                          "privateMB":  4.1,
+                          "services":  [
+                                           "netprofm"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  5512,
+                          "privateMB":  7,
+                          "services":  [
+                                           "DoSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1176,
+                          "privateMB":  4.7,
+                          "services":  [
+                                           "CryptSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  4048,
+                          "privateMB":  3,
+                          "services":  [
+                                           "wscsvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  924,
+                          "privateMB":  2,
+                          "services":  [
+                                           "InventorySvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  528,
+                          "privateMB":  2.1,
+                          "services":  [
+                                           "LSM"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  728,
+                          "privateMB":  1.3,
+                          "services":  [
+                                           "SENS"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  4936,
+                          "privateMB":  6.3,
+                          "services":  [
+                                           "DsSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  1568,
+                          "privateMB":  1.4,
+                          "services":  [
+                                           "DispBrokerDesktopSvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  2948,
+                          "privateMB":  1.9,
+                          "services":  [
+                                           "LanmanWorkstation"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  3476,
+                          "privateMB":  1.4,
+                          "services":  [
+                                           "wuqisvc"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  3480,
+                          "privateMB":  8.5,
+                          "services":  [
+                                           "wuauserv"
+                                       ]
+                      },
+                      {
+                          "name":  "svchost.exe",
+                          "pid":  2296,
+                          "privateMB":  2.6,
+                          "services":  [
+                                           "Audiosrv"
+                                       ]
+                      },
+                      {
+                          "name":  "System",
+                          "pid":  4,
+                          "privateMB":  0,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "System Idle Process",
+                          "pid":  0,
+                          "privateMB":  834.4,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "VGAuthService.exe",
+                          "pid":  3368,
+                          "privateMB":  3,
+                          "services":  [
+                                           "VGAuthService"
+                                       ]
+                      },
+                      {
+                          "name":  "vm3dservice.exe",
+                          "pid":  3392,
+                          "privateMB":  1.9,
+                          "services":  [
+                                           "VM3DService"
+                                       ]
+                      },
+                      {
+                          "name":  "vm3dservice.exe",
+                          "pid":  3808,
+                          "privateMB":  2,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "vmtoolsd.exe",
+                          "pid":  3400,
+                          "privateMB":  9.6,
+                          "services":  [
+                                           "VMTools"
+                                       ]
+                      },
+                      {
+                          "name":  "wininit.exe",
+                          "pid":  684,
+                          "privateMB":  1.6,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "winlogon.exe",
+                          "pid":  752,
+                          "privateMB":  2.3,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "WmiApSrv.exe",
+                          "pid":  4216,
+                          "privateMB":  1.9,
+                          "services":  [
+                                           "wmiApSrv"
+                                       ]
+                      },
+                      {
+                          "name":  "WmiPrvSE.exe",
+                          "pid":  2600,
+                          "privateMB":  7.5,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "WmiPrvSE.exe",
+                          "pid":  4876,
+                          "privateMB":  37.7,
+                          "services":  [
+                                           null
+                                       ]
+                      },
+                      {
+                          "name":  "WmiPrvSE.exe",
+                          "pid":  3436,
+                          "privateMB":  12,
+                          "services":  [
+                                           null
+                                       ]
+                      }
+                  ],
+    "processCount":  101,
+    "scheduledTasks":  [
+                           {
+                               "path":  "\\Microsoft\\Windows\\.NET Framework\\.NET Framework NGEN v4.0.30319",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:32",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\.NET Framework\\.NET Framework NGEN v4.0.30319 64",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:30",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\AccountHealth\\RecoverabilityToastTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T20:28:13",
+                               "lastResult":  2147746132,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Active Directory Rights Management Services Client\\AD RMS Rights Policy Template Management (Manual)",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\AppID\\EDP Policy Manager",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\AppID\\PolicyConverter",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:32:11",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\AppID\\VerifiedPublisherCertStoreCheck",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:40:13",
+                               "lastResult":  2147946720,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Application Experience\\MareBackup",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Application Experience\\Microsoft Compatibility Appraiser Exp",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Application Experience\\PcaPatchDbTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:37:31",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-02T03:40:46"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Application Experience\\SdbinstMergeDbTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Application Experience\\StartupAppTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\ApplicationData\\appuriverifierdaily",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T15:48:55",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\ApplicationData\\appuriverifierinstall",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\ApplicationData\\CleanupTemporaryState",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\ApplicationData\\DsSvcCleanup",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\AppListBackup\\Backup",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:52:42",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\AppListBackup\\BackupNonMaintenance",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  "2026-10-03T03:03:00"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\AppxDeploymentClient\\UCPD velocity",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Autochk\\Proxy",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T23:22:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\BitLocker\\BitLocker Encrypt All Drives",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\BitLocker\\BitLocker MDM policy Refresh",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Bluetooth\\UninstallDeviceTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\BrokerInfrastructure\\BgTaskRegistrationMaintenanceTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\capabilityaccessmanager\\maintenancetasks",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\CertificateServicesClient\\AikCertEnrollTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:30:29",
+                               "lastResult":  2149122452,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\CertificateServicesClient\\CryptoPolicyTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\CertificateServicesClient\\KeyPreGenTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:30:26",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\CertificateServicesClient\\SystemTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:30:22",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\CertificateServicesClient\\UserTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:44:53",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\CertificateServicesClient\\UserTask-Roam",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T20:27:42",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Chkdsk\\ProactiveScan",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Chkdsk\\SyspartRepair",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\CloudExperienceHost\\CreateObjectTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-27T14:08:07",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\CloudRestore\\Backup",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  "2026-10-05T14:30:38"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\CloudRestore\\Restore",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\ConsentUX\\UnifiedConsent\\UnifiedConsentSyncTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T15:37:32",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-02T13:55:03"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Containers\\CmCleanup",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Customer Experience Improvement Program\\Consolidator",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:37:31",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-01T18:00:00"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Customer Experience Improvement Program\\UsbCeip",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Data Integrity Scan\\Data Integrity Check And Scan",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  "2026-10-01T23:01:36"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Data Integrity Scan\\Data Integrity Scan",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Data Integrity Scan\\Data Integrity Scan for Crash Recovery",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Defrag\\ScheduledDefrag",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Device Information\\Device",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:37:31",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-02T04:21:59"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Device Information\\Device User",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:54:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Device Setup\\Metadata Refresh",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DeviceDirectoryClient\\HandleCommand",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DeviceDirectoryClient\\HandleWnsCommand",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DeviceDirectoryClient\\IntegrityCheck",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:40:13",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-07T19:27:17"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DeviceDirectoryClient\\LocateCommandUserSession",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DeviceDirectoryClient\\RegisterDeviceAccountChange",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:59:53",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DeviceDirectoryClient\\RegisterDevicePolicyChange",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DeviceDirectoryClient\\RegisterDeviceProtectionStateChanged",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:40:45",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DeviceDirectoryClient\\RegisterDeviceSettingChange",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-27T13:53:42",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DeviceDirectoryClient\\RegisterUserDevice",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:59:53",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Diagnosis\\RecommendedTroubleshootingScanner",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-27T13:56:57",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Diagnosis\\Scheduled",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Diagnosis\\UnexpectedCodepath",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:38:13",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DirectX\\DirectXDatabaseUpdater",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-27T14:29:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DirectX\\DXGIAdapterCache",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:31:12",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DiskCleanup\\SilentCleanup",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T23:06:06",
+                               "lastResult":  2147946720,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DiskDiagnostic\\Microsoft-Windows-DiskDiagnosticDataCollector",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DiskFootprint\\Diagnostics",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DiskFootprint\\StorageSense",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:21",
+                               "lastResult":  2147746132,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\DUSM\\dusmtask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\EDP\\EDP App Launch Task",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\EDP\\EDP Auth Task",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\EDP\\EDP Inaccessible Credentials Task",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\EDP\\StorageCardEncryption Task",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\ExploitGuard\\ExploitGuard MDM policy Refresh",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:30:11",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Feedback\\Siuf\\DmClient",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Feedback\\Siuf\\DmClientOnScenarioDownload",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:31:19",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\FileHistory\\File History (maintenance mode)",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Flighting\\FeatureConfig\\GovernedFeatureUsageProcessing",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Flighting\\FeatureConfig\\ReconcileConfigs",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T00:44:30",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Flighting\\FeatureConfig\\ReconcileFeatures",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:37:50",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Flighting\\FeatureConfig\\SafeguardsReconciliation",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:30:43",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Flighting\\FeatureConfig\\UsageDataFlushing",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:30:13",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Flighting\\FeatureConfig\\UsageDataReceiver",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:48:40",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Flighting\\FeatureConfig\\UsageDataReporting",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:30:42",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Flighting\\OneSettings\\RefreshCache",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:40:04",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-01T21:52:17"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Hotpatch\\Monitoring",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:13",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-02T03:21:50"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\input\\InputSettingsRestoreDataAvailable",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\input\\LocalUserSyncDataAvailable",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\input\\MouseSyncDataAvailable",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\input\\PenSyncDataAvailable",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\input\\RemoteMouseSyncDataAvailable",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\input\\RemotePenSyncDataAvailable",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\input\\RemoteTouchpadSyncDataAvailable",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\input\\syncpensettings",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\input\\TouchpadSyncDataAvailable",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\InstallService\\RestoreDevice",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T23:39:05",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\InstallService\\ScanForUpdates",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:37:31",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-02T04:00:18"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\InstallService\\ScanForUpdatesAsUser",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T15:48:55",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\InstallService\\SmartRetry",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-27T14:34:14",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\International\\Synchronize Language Settings",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:45:24",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Kernel\\La57Cleanup",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\LanguageComponentsInstaller\\Installation",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:59:53",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\LanguageComponentsInstaller\\ReconcileLanguageResources",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T20:17:08",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\License Manager\\TempSignedLicenseExchange",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T15:48:55",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Location\\WindowsActionDialog",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Maintenance\\WinSAT",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Management\\Provisioning\\Cellular",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Management\\Provisioning\\Logon",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:52:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Maps\\MapsToastTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\MemoryDiagnostic\\AutomaticOfflineMemoryDiagnostic",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:44:53",
+                               "lastResult":  2147746065,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\MemoryDiagnostic\\ProcessMemoryDiagnosticEvents",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T23:06:06",
+                               "lastResult":  2147946720,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\MUI\\LPRemove",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Multimedia\\SystemSoundsService",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:44:52",
+                               "lastResult":  1073807364,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Network Connectivity Status Indicator\\NcsiIdentifyUserProxies",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:44:53",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\NlaSvc\\WiFiTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\PCRPF\\PCR Prediction Framework Firmware Update Task",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\PerformanceTrace\\ShowFeedbackToast",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\PerformanceTrace\\WhesvcToast",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\PI\\Secure-Boot-Update",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:35:12",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\PI\\Sqm-Tasks",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Plug and Play\\Device Install Group Policy",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Plug and Play\\Device Install Reboot Required",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:44:53",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Plug and Play\\Sysprep Generalize Drivers",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Pluton\\Pluton-Ksp-Provisioning",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Power Efficiency Diagnostics\\AnalyzeSystem",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:49:27",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Printing\\EduPrintProv",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Printing\\PrinterCleanupTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  "2026-10-26T12:00:00"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Printing\\PrintJobCleanupTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  "2026-10-02T12:00:00"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\PushToInstall\\LoginCheck",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T20:17:09",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\PushToInstall\\Registration",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:37:31",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-02T16:37:41"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Ras\\MobilityManager",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\RecoveryEnvironment\\VerifyWinRE",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\ReFsDedupSvc\\Initialization",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Registry\\RegIdleBackup",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\RemoteAssistance\\RemoteAssistanceTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\RetailDemo\\CleanupOfflineContent",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  "2026-10-04T04:19:05"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Servicing\\StartComponentCleanup",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Setup\\PITRTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T23:22:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Setup\\SetupRecoveryDataTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:40:13",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-15T12:31:53"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Shell\\CreateObjectTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-27T15:33:50",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Shell\\FamilySafetyMonitor",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Shell\\FamilySafetyRefreshTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Shell\\IndexerAutomaticMaintenance",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Shell\\ThemesSyncedImageDownload",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T15:48:55",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Shell\\UpdateUserPictureTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Shell\\UpdateUserPictureTaskContained",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\SoftwareProtectionPlatform\\SvcRestartTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  "2026-10-02T16:29:52"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\SoftwareProtectionPlatform\\SvcRestartTaskLogon",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:44:53",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\SoftwareProtectionPlatform\\SvcRestartTaskNetwork",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:30:17",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\SpacePort\\SpaceAgentTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\SpacePort\\SpaceManagerTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Speech\\SpeechModelDownloadTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:40:13",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-02T02:27:57"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\StateRepository\\MaintenanceTasks",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Storage Tiers Management\\Storage Tiers Management Initialization",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Sustainability\\PowerGridForecastTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:37:31",
+                               "lastResult":  2147946720,
+                               "nextRun":  "2026-10-02T12:40:10"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Sustainability\\SustainabilityTelemetry",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Sysmain\\ResPriStaticDbSync",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Sysmain\\WsSwapAssessmentTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T16:08:15",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\SystemRestore\\SR",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:49:25",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Task Manager\\Interactive",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\TextServicesFramework\\MsCtfMonitor",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:44:52",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Time Synchronization\\ForceSynchronizeTime",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:30:14",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Time Synchronization\\SynchronizeTime",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Time Zone\\SynchronizeTimeZone",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\TPM\\Tpm-HASCertRetr",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\TPM\\Tpm-Maintenance",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:30:16",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\TPM\\Tpm-PreAttestationHealthCheck",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:30:13",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\UpdateOrchestrator\\Report policies",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\UpdateOrchestrator\\Schedule Scan",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:37:31",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-01T18:10:27"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\UpdateOrchestrator\\Schedule Scan Static Task",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T20:17:09",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\UpdateOrchestrator\\Start Oobe Expedite Work",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:43:13",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\UpdateOrchestrator\\StartOobeAppsScan_LicenseAccepted",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\UpdateOrchestrator\\StartOobeAppsScanAfterUpdate",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\UpdateOrchestrator\\UIEOrchestrator",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:37:31",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-03T02:25:04"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\UpdateOrchestrator\\USO_UxBroker",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:40:34",
+                               "lastResult":  2147942402,
+                               "nextRun":  "2026-10-03T02:59:07"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\UpdateOrchestrator\\UUS Failover Task",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\UPnP\\UPnPHostConfig",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\UsageAndQualityInsights\\UsageAndQualityInsights-MaintenanceTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:37:31",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-01T18:01:59"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\USB\\Usb-Notifications",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WCM\\WiFiTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WDI\\ResolutionHost",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-27T22:45:24",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Windows Defender\\Windows Defender Cache Maintenance",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:49:12",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Windows Defender\\Windows Defender Cleanup",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:50",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Windows Defender\\Windows Defender Scheduled Scan",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Windows Defender\\Windows Defender Verification",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:30:42",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Windows Error Reporting\\QueueReporting",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:37:31",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-01T19:15:52"
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Windows Filtering Platform\\BfeOnServiceStartTypeChange",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Windows Media Sharing\\UpdateLibrary",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WindowsAI\\ClickToDo\\ModelCachingLimit",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WindowsAI\\ClickToDo\\ModelCachingUpdate",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T00:35:38",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WindowsAI\\Recall\\PolicyConfiguration",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:44:51",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WindowsAI\\Settings\\InitialConfiguration",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:35:12",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WindowsColorSystem\\Calibration Loader",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:44:53",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WindowsUpdate\\Refresh Group Policy Cache",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WindowsUpdate\\Scheduled Start",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Wininet\\CacheTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:44:52",
+                               "lastResult":  1073807364,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WlanSvc\\CDSSync",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:46:01",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WlanSvc\\MoProfileManagement",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WOF\\WIM-Hash-Management",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WOF\\WIM-Hash-Validation",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:41:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Work Folders\\Work Folders Logon Synchronization",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:49:53",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\Work Folders\\Work Folders Maintenance Work",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T23:22:21",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WwanSvc\\NotificationTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\Windows\\WwanSvc\\OobeDiscovery",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:30:15",
+                               "lastResult":  0,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\Microsoft\\XblGameSave\\XblGameSaveTask",
+                               "state":  "Ready",
+                               "lastRun":  null,
+                               "lastResult":  267011,
+                               "nextRun":  null
+                           },
+                           {
+                               "path":  "\\MicrosoftEdgeUpdateTaskMachineCore{6EDC8750-46F5-48A1-91A4-7FFF9792B10E}",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T22:45:53",
+                               "lastResult":  267014,
+                               "nextRun":  "2026-10-01T17:08:00"
+                           },
+                           {
+                               "path":  "\\MicrosoftEdgeUpdateTaskMachineUA{D27D2C87-E3EF-4E56-93AF-0C538884F356}",
+                               "state":  "Ready",
+                               "lastRun":  "2026-10-01T16:38:00",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-01T17:38:00"
+                           },
+                           {
+                               "path":  "\\SoftLanding\\S-1-5-21-1823464061-1514780162-3483739414-1001\\SoftLandingCreativeManagementTask",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-28T23:22:38",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-02T13:18:17"
+                           },
+                           {
+                               "path":  "\\SoftLanding\\S-1-5-21-1823464061-1514780162-3483739414-1001\\SoftLandingDeferralTask-{d7b42915-4dce-4b31-a229-e4cc4dc126ad}",
+                               "state":  "Ready",
+                               "lastRun":  "2026-09-29T00:07:01",
+                               "lastResult":  0,
+                               "nextRun":  "2026-10-01T17:07:00"
+                           }
+                       ]
+}

@@ -1,7 +1,8 @@
 #Requires -Version 5.1
-# System states that are not single registry values: hibernation, Compact OS and reserved storage.
-# Each kind is read and set through the tool Microsoft documents for it, and every change is checked
-# by reading the state back, so a tool that reports success without changing anything fails here.
+# System states that are not single registry values: hibernation, Compact OS, reserved storage and
+# scheduled tasks. Each kind is read and set through the tool Microsoft documents for it, and every
+# change is checked by reading the state back, so a tool that reports success without changing
+# anything fails here.
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
@@ -10,7 +11,11 @@ $script:States = @{
     Hibernation     = 'On', 'Off'
     CompactOS       = 'Always', 'Never'
     ReservedStorage = 'Enabled', 'Disabled'
+    # Absent: this Windows build does not have the task. Only a snapshot records it; setting it is a no-op.
+    ScheduledTask   = 'Enabled', 'Disabled', 'Absent'
 }
+# Kinds that name one item of many (a task), so they need -Name.
+$script:NamedKinds = @('ScheduledTask')
 $script:PowerKey = 'HKLM:\SYSTEM\CurrentControlSet\Control\Power'
 $script:HiberFile = Join-Path $env:SystemDrive 'hiberfil.sys'
 # compact.exe /CompactOS keeps its state here (1 = compact). The WOF driver hides the compression from
@@ -48,8 +53,35 @@ function Assert-KutayStateName([string]$Kind, [string]$State) {
     }
 }
 
+function Assert-KutayStateTarget([string]$Kind, [string]$Name) {
+    if ($script:NamedKinds -contains $Kind -and -not $Name) { throw "$Kind needs -Name" }
+    if ($script:NamedKinds -notcontains $Kind -and $Name) { throw "$Kind takes no -Name" }
+}
+
+# '\Microsoft\Windows\Defrag\ScheduledDefrag' -> TaskPath '\Microsoft\Windows\Defrag\', TaskName 'ScheduledDefrag'
+function Split-KutayTaskName([string]$Name) {
+    $cut = $Name.LastIndexOf('\')
+    if (-not $Name.StartsWith('\') -or $cut -eq $Name.Length - 1) {
+        throw "Task '$Name' must be a full path such as \Microsoft\Windows\Folder\Task"
+    }
+    [pscustomobject]@{ TaskPath = $Name.Substring(0, $cut + 1); TaskName = $Name.Substring($cut + 1) }
+}
+
+function Get-KutayScheduledTaskState([string]$Name) {
+    $target = Split-KutayTaskName $Name
+    $task = Get-ScheduledTask -TaskPath $target.TaskPath -TaskName $target.TaskName -ErrorAction SilentlyContinue
+    if (-not $task) { return 'Absent' }
+    # Ready, Running and Queued all mean the task will run.
+    if ([string]$task.State -eq 'Disabled') { return 'Disabled' }
+    return 'Enabled'
+}
+
 function Get-KutaySystemState {
-    param([Parameter(Mandatory)][ValidateSet('Hibernation', 'CompactOS', 'ReservedStorage')][string]$Kind)
+    param(
+        [Parameter(Mandatory)][ValidateSet('Hibernation', 'CompactOS', 'ReservedStorage', 'ScheduledTask')][string]$Kind,
+        [string]$Name = ''
+    )
+    Assert-KutayStateTarget $Kind $Name
     switch ($Kind) {
         'Hibernation' {
             # powercfg writes HibernateEnabled. A clean install may not have it yet; then the hiberfile
@@ -71,18 +103,30 @@ function Get-KutaySystemState {
             Assert-KutayStateName $Kind $state
             return $state
         }
+        'ScheduledTask' { return Get-KutayScheduledTaskState $Name }
     }
 }
 
 function Set-KutaySystemState {
     [CmdletBinding(SupportsShouldProcess)]
     param(
-        [Parameter(Mandatory)][ValidateSet('Hibernation', 'CompactOS', 'ReservedStorage')][string]$Kind,
-        [Parameter(Mandatory)][string]$State
+        [Parameter(Mandatory)][ValidateSet('Hibernation', 'CompactOS', 'ReservedStorage', 'ScheduledTask')][string]$Kind,
+        [Parameter(Mandatory)][string]$State,
+        [string]$Name = ''
     )
     Assert-KutayStateName $Kind $State
-    if ((Get-KutaySystemState -Kind $Kind) -eq $State) { return }
-    if (-not $PSCmdlet.ShouldProcess($Kind, "Set to $State")) { return }
+    Assert-KutayStateTarget $Kind $Name
+    $target = $Kind
+    if ($Name) { $target = "$Kind $Name" }
+    $current = Get-KutaySystemState -Kind $Kind -Name $Name
+    if ($current -eq $State) { return }
+    # A task can be missing on this build (or was missing when the snapshot was taken and appeared
+    # since, through an update). There is nothing KutayOS changed, so leave it as Windows has it.
+    if ($current -eq 'Absent' -or $State -eq 'Absent') {
+        Write-Warning "$target is $current, wanted $State; left as it is"
+        return
+    }
+    if (-not $PSCmdlet.ShouldProcess($target, "Set to $State")) { return }
 
     switch ($Kind) {
         # Only on/off is snapshotted. The hiberfile type (/type full|reduced) is a separate setting this
@@ -90,9 +134,17 @@ function Set-KutaySystemState {
         'Hibernation' { Invoke-KutayNativeCommand -FilePath 'powercfg.exe' -ArgumentList '/hibernate', $State.ToLowerInvariant() | Out-Null }
         'CompactOS' { Invoke-KutayNativeCommand -FilePath 'compact.exe' -ArgumentList "/CompactOS:$($State.ToLowerInvariant())" | Out-Null }
         'ReservedStorage' { Set-WindowsReservedStorageState -State $State | Out-Null }
+        'ScheduledTask' {
+            $task = Split-KutayTaskName $Name
+            if ($State -eq 'Disabled') {
+                Disable-ScheduledTask -TaskPath $task.TaskPath -TaskName $task.TaskName | Out-Null
+            } else {
+                Enable-ScheduledTask -TaskPath $task.TaskPath -TaskName $task.TaskName | Out-Null
+            }
+        }
     }
-    $now = Get-KutaySystemState -Kind $Kind
-    if ($now -ne $State) { throw "$Kind is still $now after setting it to $State" }
+    $now = Get-KutaySystemState -Kind $Kind -Name $Name
+    if ($now -ne $State) { throw "$target is still $now after setting it to $State" }
 }
 
 Export-ModuleMember -Function Get-KutaySystemState, Set-KutaySystemState, Invoke-KutayNativeCommand

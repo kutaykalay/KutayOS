@@ -4,9 +4,14 @@ Applies every tweak from manifest.json twice the way AME would (the commands, th
 values), checks the values and snapshots (per-user values in every user hive and the default
 profile), reverts everything with Revert-KutayOS.ps1 -All and
 checks that every value is back. Writes PASS/FAIL lines to result.txt; the host decides the verdict.
+-ApplyOnly applies the default tweaks (no FeaturePages options) once and stops there, to prepare a
+VM for performance measurements.
 vmrun appends a blank argument, so remaining arguments are accepted and ignored.
 #>
-param([Parameter(ValueFromRemainingArguments)][object[]]$Rest)
+param(
+    [switch]$ApplyOnly,
+    [Parameter(ValueFromRemainingArguments)][object[]]$Rest
+)
 $null = $Rest
 $ErrorActionPreference = 'Stop'
 
@@ -19,6 +24,8 @@ $script:SystemStates = @{
     Hibernation     = 'On', 'Off'
     CompactOS       = 'Always', 'Never'
     ReservedStorage = 'Enabled', 'Disabled'
+    # Absent is only a snapshot record, never a state to prepare.
+    ScheduledTask   = 'Enabled', 'Disabled'
 }
 
 function Add-Check([string]$Name, [bool]$Ok, [string]$Detail = '') {
@@ -86,6 +93,14 @@ function Invoke-Native([string]$What, [string[]]$Arguments) {
     Add-Check $What ($LASTEXITCODE -eq 0) "exit $LASTEXITCODE"
 }
 
+# A system change is one kind, or one named item of a kind (a scheduled task).
+function Get-SystemKey($Change) {
+    if ($Change.name) { return "$($Change.kind) $($Change.name)" }
+    $Change.kind
+}
+
+function Get-ChangeState($Change) { Get-KutaySystemState -Kind $Change.kind -Name ([string]$Change.name) }
+
 function Get-FreeSpace { (Get-CimInstance -ClassName Win32_LogicalDisk -Filter "DeviceID='C:'").FreeSpace }
 
 # Puts each system kind a tweak sets into the other state first, so the tweak really changes it and
@@ -93,13 +108,13 @@ function Get-FreeSpace { (Get-CimInstance -ClassName Win32_LogicalDisk -Filter "
 # noted and checked as it is.
 function Initialize-SystemState([object[]]$Changes) {
     foreach ($change in $Changes) {
-        if ((Get-KutaySystemState -Kind $change.kind) -ne $change.state) { continue }
+        if ((Get-ChangeState $change) -ne $change.state) { continue }
         $other = @($script:SystemStates[$change.kind] | Where-Object { $_ -ne $change.state })[0]
         try {
-            Set-KutaySystemState -Kind $change.kind -State $other
-            $results.Add("INFO prepared $($change.kind)=$other")
+            Set-KutaySystemState -Kind $change.kind -State $other -Name ([string]$change.name)
+            $results.Add("INFO prepared $(Get-SystemKey $change)=$other")
         } catch {
-            $results.Add("INFO could not prepare $($change.kind)=${other}: $($_.Exception.Message)")
+            $results.Add("INFO could not prepare $(Get-SystemKey $change)=${other}: $($_.Exception.Message)")
         }
     }
 }
@@ -112,8 +127,8 @@ function Invoke-TweakPass([object[]]$Tweaks, [int]$Pass) {
             foreach ($command in @($tweak.commands)) { Invoke-Native "pass $Pass $($tweak.id) command" @('-Command', $command) }
             if ($Pass -eq 1) { $results.Add("INFO $($tweak.id) freed $([math]::Round(((Get-FreeSpace) - $free) / 1MB)) MB") }
             foreach ($change in @($tweak.system)) {
-                $now = Get-KutaySystemState -Kind $change.kind
-                Add-Check "pass $Pass $($tweak.id) $($change.kind)=$($change.state)" ($now -eq $change.state) "read '$now'"
+                $now = Get-ChangeState $change
+                Add-Check "pass $Pass $($tweak.id) $(Get-SystemKey $change)=$($change.state)" ($now -eq $change.state) "read '$now'"
             }
             foreach ($change in @($tweak.changes)) {
                 Write-RegistryValue $change
@@ -158,6 +173,7 @@ try {
     # 5.1's ConvertFrom-Json emits the whole array as one pipeline object; assign first, then wrap.
     $parsed = Get-Content -LiteralPath (Join-Path $root 'manifest.json') -Raw | ConvertFrom-Json
     $tweaks = @($parsed)
+    if ($ApplyOnly) { $tweaks = @($tweaks | Where-Object { -not $_.option }) }
     Invoke-Native 'Initialize-Kutay' @('-File', (Join-Path $executables 'KutayModules\Initialize-Kutay.ps1'))
 
     $original = @{}
@@ -167,9 +183,19 @@ try {
     Import-Module (Join-Path $executables 'KutayModules\KutayUserHive.psm1')
     Import-Module (Join-Path $executables 'KutayModules\KutaySystemState.psm1')
     $allSystemChanges = @($tweaks | ForEach-Object { @($_.system) })
+    if ($ApplyOnly) {
+        Invoke-TweakPass $tweaks 1
+        Add-Check "applied $($tweaks.Count) default tweaks" $true
+        $results | Set-Content -LiteralPath (Join-Path $root 'result.txt') -Encoding ASCII
+        exit 0
+    }
     Initialize-SystemState $allSystemChanges
     $systemOriginal = @{}
-    foreach ($change in $allSystemChanges) { $systemOriginal[$change.kind] = Get-KutaySystemState -Kind $change.kind }
+    $systemChangeByKey = @{}
+    foreach ($change in $allSystemChanges) {
+        $systemOriginal[(Get-SystemKey $change)] = Get-ChangeState $change
+        $systemChangeByKey[(Get-SystemKey $change)] = $change
+    }
     $results.Add("INFO free before $([math]::Round((Get-FreeSpace) / 1MB)) MB")
     $hiveUsers = @(Get-KutayUserHive | ForEach-Object { $_.user })
     # At least the signed-in guest user and the default profile, or per-user checks prove nothing.
@@ -192,11 +218,13 @@ try {
         $snapshot = $json | ConvertFrom-Json
         Test-UserSnapshot $tweak $snapshot $userOriginal
         foreach ($change in @($tweak.system)) {
-            $entry = @(@($snapshot.PSObject.Properties['system'] | ForEach-Object { $_.Value }) | Where-Object { $_.kind -eq $change.kind })
+            $key = Get-SystemKey $change
+            $entry = @(@($snapshot.PSObject.Properties['system'] | ForEach-Object { $_.Value }) |
+                    Where-Object { (Get-SystemKey $_) -eq $key })
             $recorded = $null
             if ($entry.Count) { $recorded = $entry[0].state }
-            $was = $systemOriginal[$change.kind]
-            Add-Check "$($tweak.id) snapshot holds original $($change.kind)" ($recorded -eq $was) "original '$was', recorded '$recorded'"
+            $was = $systemOriginal[$key]
+            Add-Check "$($tweak.id) snapshot holds original $key" ($recorded -eq $was) "original '$was', recorded '$recorded'"
         }
         $items = @($snapshot.registry)
         foreach ($change in @($tweak.changes)) {
@@ -223,9 +251,9 @@ try {
         $now = Read-Value $path $name
         Add-Check "reverted $name" ($now -eq $original[$key]) "original '$($original[$key])', now '$now'"
     }
-    foreach ($kind in @($systemOriginal.Keys | Sort-Object)) {
-        $now = Get-KutaySystemState -Kind $kind
-        Add-Check "reverted $kind" ($now -eq $systemOriginal[$kind]) "original '$($systemOriginal[$kind])', now '$now'"
+    foreach ($key in @($systemOriginal.Keys | Sort-Object)) {
+        $now = Get-ChangeState $systemChangeByKey[$key]
+        Add-Check "reverted $key" ($now -eq $systemOriginal[$key]) "original '$($systemOriginal[$key])', now '$now'"
     }
     if ($allUserChanges.Count) {
         $userNow = Read-UserValue $allUserChanges

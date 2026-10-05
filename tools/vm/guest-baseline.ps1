@@ -10,6 +10,8 @@ param(
     [double]$QuietPct = 10,
     [int]$QuietMinutes = 5,
     [int]$MaxWaitMinutes = 60,
+    # Measure no earlier than this many minutes after boot; 0 measures as soon as it is quiet.
+    [int]$MinUptimeMinutes = 0,
     [Parameter(ValueFromRemainingArguments = $true)][string[]]$VmrunExtra
 )
 $null = $VmrunExtra
@@ -74,6 +76,13 @@ $r.quietReached = $quietRun -ge $QuietMinutes
 $r.quietWaitMin = [math]::Round(((Get-Date) - $waitStart).TotalMinutes, 1)
 $r.quietAtUptimeMin = [math]::Round(((Get-Date) - $os.LastBootUpTime).TotalMinutes, 1)
 $r.quietRule = "cpu<$QuietPct% for $QuietMinutes min, max $MaxWaitMinutes min"
+
+# Memory keeps settling for a while after maintenance (Defender, indexer, svchost grow and shrink),
+# so runs that got quiet at different times are not comparable. Measure all of them at the same
+# uptime at the earliest.
+$uptimeLeft = $MinUptimeMinutes - ((Get-Date) - $os.LastBootUpTime).TotalMinutes
+if ($uptimeLeft -gt 0) { Start-Sleep -Seconds ([int]($uptimeLeft * 60)) }
+$r.measuredAtUptimeMin = [math]::Round(((Get-Date) - $os.LastBootUpTime).TotalMinutes, 1)
 
 $procCpuBefore = @{}
 Get-Process | ForEach-Object { $procCpuBefore[$_.Id] = $_.CPU }

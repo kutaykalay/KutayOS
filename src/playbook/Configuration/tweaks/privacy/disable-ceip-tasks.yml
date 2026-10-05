@@ -1,0 +1,18 @@
+---
+title: Data collection tasks off
+description: Turns off the scheduled tasks that gather Customer Experience Improvement Program and compatibility data
+actions:
+  # Source: https://learn.microsoft.com/en-us/previous-versions/windows-server/it-pro/windows-server-2019/remote/remote-desktop-services/rds-vdi-recommendations
+  # Source: https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/blob/main/2009/ConfigurationFiles/ScheduledTasks.json
+  # Evidence: documented. Microsoft's VDI guide lists Consolidator and UsbCeip as safe to disable.
+  # Proxy, Compatibility Appraiser Exp and DiskDiagnosticDataCollector describe themselves (task
+  # description) as collecting data for CEIP when opted in; Microsoft's VDI tool disables all five.
+  # All five exist and are enabled on a clean LTSC 2024 (docs/measurements/slice5). A task a later
+  # build drops is skipped with a warning. Complements disable-ceip, which turns CEIP itself off.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-ceip-tasks
+  - !powerShell:
+    command: '.\KutayModules\Set-KutaySystemState.ps1 -Id disable-ceip-tasks -Kind ScheduledTask -State Disabled -Name ''\Microsoft\Windows\Customer Experience Improvement Program\Consolidator'',''\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip'',''\Microsoft\Windows\Autochk\Proxy'',''\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser Exp'',''\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector'''
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}

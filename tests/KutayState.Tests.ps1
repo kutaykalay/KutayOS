@@ -211,6 +211,30 @@ Describe 'System state snapshots' {
         Join-Path $TestDrive 'disable-hibernation.json' | Should -Not -Exist
     }
 
+    It 'records each scheduled task with its name' {
+        Mock -ModuleName KutayState Get-KutaySystemState { if ($Name -like '*A') { 'Enabled' } else { 'Absent' } }
+
+        Save-KutaySystemSnapshot -Id 'disable-ceip-tasks' -Kind ScheduledTask -Name '\T\A', '\T\B'
+
+        $json = Get-Content (Join-Path $TestDrive 'disable-ceip-tasks.json') -Raw | ConvertFrom-Json
+        @($json.system).Count | Should -Be 2
+        $json.system[0].name | Should -Be '\T\A'
+        $json.system[0].state | Should -Be 'Enabled'
+        $json.system[1].name | Should -Be '\T\B'
+        $json.system[1].state | Should -Be 'Absent'
+    }
+
+    It 'puts each scheduled task back by name' {
+        Save-KutaySystemSnapshot -Id 'disable-ceip-tasks' -Kind ScheduledTask -Name '\T\A', '\T\B'
+
+        Restore-KutaySnapshot -Id 'disable-ceip-tasks'
+
+        Should -Invoke -ModuleName KutayState Set-KutaySystemState -Times 1 -Exactly -ParameterFilter {
+            $Kind -eq 'ScheduledTask' -and $Name -eq '\T\A' -and $State -eq 'On'
+        }
+        Should -Invoke -ModuleName KutayState Set-KutaySystemState -Times 1 -Exactly -ParameterFilter { $Name -eq '\T\B' }
+    }
+
     It 'keeps the snapshot when the state cannot be put back' {
         Save-KutaySystemSnapshot -Id 'disable-reserved-storage' -Kind ReservedStorage
         Mock -ModuleName KutayState Set-KutaySystemState { throw 'reserved storage is in use' }
