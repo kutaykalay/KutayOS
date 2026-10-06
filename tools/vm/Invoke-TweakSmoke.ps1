@@ -14,8 +14,9 @@ param(
     [string]$Snapshot = 'clean-9550-scanned',
     [string]$Vmx = '',
     [string]$OutFile = '',
-    # Memory for this boot; 4 GB fits the dev host's commit limit and is plenty without a logon. 0 keeps the snapshot's.
-    [int]$MemoryMB = 4096,
+    # Hardware for this boot (0 keeps the snapshot's): 8 GB / 4 vCPU on the desktop host (Ryzen 5 9600X, 32 GB).
+    [int]$MemoryMB = 8192,
+    [int]$CpuCount = 4,
     # Use the VM as it runs now; only when it was just reverted to the snapshot and nothing ran since.
     [switch]$NoReset,
     # Apply the default tweaks once (no revert, no FeaturePages options), shut the VM down and save it
@@ -71,7 +72,7 @@ try {
 
     if (-not $NoReset) {
         Write-Output "$(Get-Date -Format HH:mm:ss) reverting to $Snapshot and starting"
-        Invoke-TestVmReset -Vmx $Vmx -Snapshot $Snapshot -MemoryMB $MemoryMB
+        Invoke-TestVmReset -Vmx $Vmx -Snapshot $Snapshot -MemoryMB $MemoryMB -CpuCount $CpuCount
     }
     # Guest operations only need Tools, not a logon: the VM boots without the GUI and has no autologon.
     Wait-Until { (Get-VmToolsState $Vmx) -match 'running' } 'VMware Tools'

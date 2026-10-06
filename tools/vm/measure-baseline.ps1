@@ -18,8 +18,9 @@ param(
     [string]$Vmx = '',
     [string]$Snapshot = '',
     [switch]$NoLogon,
-    # Memory for this boot when -Snapshot is used; 4 GB fits the dev host's commit limit. 0 keeps the snapshot's.
-    [int]$MemoryMB = 4096,
+    # Hardware for this boot (0 keeps the snapshot's): 8 GB / 4 vCPU on the desktop host (Ryzen 5 9600X, 32 GB).
+    [int]$MemoryMB = 8192,
+    [int]$CpuCount = 4,
     [int]$SettleSeconds = 60,
     # Measure no earlier than this many minutes after boot, so runs are compared at the same uptime.
     [int]$MinUptimeMinutes = 30,
@@ -49,7 +50,7 @@ try {
 
     if ($Snapshot) {
         Write-Output "$(Get-Date -Format HH:mm:ss) reverting to $Snapshot and starting"
-        Invoke-TestVmReset -Vmx $Vmx -Snapshot $Snapshot -MemoryMB $MemoryMB
+        Invoke-TestVmReset -Vmx $Vmx -Snapshot $Snapshot -MemoryMB $MemoryMB -CpuCount $CpuCount
     }
     Wait-Until { (Get-VmToolsState $Vmx) -match 'running' } 'VMware Tools'
     if ($NoLogon) {

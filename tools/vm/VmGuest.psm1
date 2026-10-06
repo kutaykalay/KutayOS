@@ -48,6 +48,9 @@ function Invoke-GuestScript {
     )
     $guestScript = Join-Path -Path $script:GuestDir -ChildPath (Split-Path -Path $ScriptPath -Leaf)
     Invoke-Vmrun CopyFileFromHostToGuest $Vmx $ScriptPath $guestScript
+    # A result left by an earlier run must not be copied back if this run fails to write one.
+    $exists = & $script:Vmrun @(Get-VmAuth) fileExistsInGuest $Vmx $GuestResult
+    if ($exists -match 'The file exists') { Invoke-Vmrun deleteFileInGuest $Vmx $GuestResult }
     $redirect = ''
     if ($StdoutFile) { $redirect = " > $StdoutFile 2>&1" }
     $cmd = "/c $script:GuestPowerShell -NoProfile -ExecutionPolicy Bypass -File $guestScript $ScriptArgs$redirect"
@@ -68,20 +71,46 @@ function Copy-ItemToGuest([string]$Vmx, [string]$Source, [string]$Destination) {
 # can block vmrun on the Workstation window asking for the encryption password. But without a
 # display attached the guest stalls before VMware Tools starts, so the Workstation window is then
 # opened on the running VM (no password prompt, it is already unlocked).
-# -MemoryMB overrides the memory size for this boot: the revert brings back the snapshot's size
-# (6 GB), which a host with a small page file can't commit ("anonymous paging file ... error 1450").
-# memsize stays plain text in the encrypted VMX.
-function Invoke-TestVmReset([string]$Vmx, [string]$Snapshot, [int]$MemoryMB = 0) {
+# A revert brings back the snapshot's VMX, so the overrides are written after it, every boot.
+# -MemoryMB / -CpuCount set the hardware for this boot (0 keeps the snapshot's). uuid.action keep:
+# the VM was copied to a new host, and without it every revert asks "moved or copied?", which nogui
+# answers "copied" with a new BIOS UUID and MAC (new network profile in the guest, measurement noise).
+# The install ISO is gone, so the CD-ROM starts disconnected. These keys are plain text in the
+# encrypted VMX.
+function Set-VmxValue([string]$Vmx, [System.Collections.IDictionary]$Values) {
+    $text = [IO.File]::ReadAllText($Vmx)
+    $newline = "`n"
+    if ($text.Contains("`r`n")) { $newline = "`r`n" }
+    foreach ($key in $Values.Keys) {
+        $line = "$key = `"$($Values[$key])`""
+        # Whole key, any case, any spacing; the line's own \r stays in place.
+        $pattern = '(?im)^' + [regex]::Escape($key) + '\s*=.*?(?=\r?$)'
+        $count = [regex]::Matches($text, $pattern).Count
+        if ($count -gt 1) { throw "$Vmx has $key $count times" }
+        if ($count -eq 1) { $text = [regex]::Replace($text, $pattern, $line.Replace('$', '$$')) }
+        else { $text = $text.TrimEnd() + $newline + $line + $newline }
+    }
+    # Write next to it and swap, so a crash mid-write can't leave a half-written VMX.
+    $temp = "$Vmx.kutay-tmp"
+    [IO.File]::WriteAllText($temp, $text)
+    Move-Item -LiteralPath $temp -Destination $Vmx -Force
+}
+
+function Invoke-TestVmReset([string]$Vmx, [string]$Snapshot, [int]$MemoryMB = 0, [int]$CpuCount = 0) {
     & $script:Vmrun -T ws -vp $env:KUTAY_VM_PASS revertToSnapshot $Vmx $Snapshot
     if ($LASTEXITCODE -ne 0) { throw "vmrun revertToSnapshot $Snapshot failed ($LASTEXITCODE)" }
-    if ($MemoryMB -gt 0) {
-        $text = [IO.File]::ReadAllText($Vmx) -replace '(?m)^memsize = "\d+"', "memsize = `"$MemoryMB`""
-        [IO.File]::WriteAllText($Vmx, $text)
-    }
+    $values = [ordered]@{ 'uuid.action' = 'keep'; 'sata0:1.startConnected' = 'FALSE' }
+    if ($MemoryMB -gt 0) { $values['memsize'] = $MemoryMB }
+    if ($CpuCount -gt 0) { $values['numvcpus'] = $CpuCount; $values['cpuid.coresPerSocket'] = $CpuCount }
+    Set-VmxValue -Vmx $Vmx -Values $values
     & $script:Vmrun -T ws -vp $env:KUTAY_VM_PASS start $Vmx nogui
     if ($LASTEXITCODE -ne 0) { throw "vmrun start failed ($LASTEXITCODE)" }
     $workstation = Join-Path (Split-Path -Path $script:Vmrun -Parent) 'vmware.exe'
     Start-Process -FilePath $workstation -ArgumentList "`"$Vmx`""
+    # The window asks for the encryption password even when Credential Manager has it; until it is
+    # unlocked the guest has no display and Tools does not start.
+    $unlocked = (& (Join-Path $PSScriptRoot 'Unlock-VmWindow.ps1')) -eq $true
+    if (-not $unlocked) { Write-Warning 'No VMware password pane found; the VM window may still be locked' }
 }
 
 # Shuts the guest down cleanly and saves the powered-off VM as a snapshot. An existing snapshot with
@@ -90,6 +119,7 @@ function Save-TestVmSnapshot([string]$Vmx, [string]$Snapshot) {
     & $script:Vmrun -T ws -vp $env:KUTAY_VM_PASS stop $Vmx soft
     if ($LASTEXITCODE -ne 0) { throw "vmrun stop failed ($LASTEXITCODE)" }
     $existing = & $script:Vmrun -T ws -vp $env:KUTAY_VM_PASS listSnapshots $Vmx
+    if ($LASTEXITCODE -ne 0) { throw "vmrun listSnapshots failed ($LASTEXITCODE)" }
     if (@($existing | Select-Object -Skip 1) -contains $Snapshot) {
         & $script:Vmrun -T ws -vp $env:KUTAY_VM_PASS deleteSnapshot $Vmx $Snapshot
         if ($LASTEXITCODE -ne 0) { throw "vmrun deleteSnapshot $Snapshot failed ($LASTEXITCODE)" }
@@ -99,4 +129,4 @@ function Save-TestVmSnapshot([string]$Vmx, [string]$Snapshot) {
 }
 
 Export-ModuleMember -Function Get-DefaultVmx, Get-VmToolsState, Test-GuestDesktop, Invoke-GuestScript,
-    Copy-ItemToGuest, Invoke-TestVmReset, Save-TestVmSnapshot
+    Copy-ItemToGuest, Invoke-TestVmReset, Save-TestVmSnapshot, Set-VmxValue

@@ -51,16 +51,6 @@ $r.isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsId
     [Security.Principal.WindowsBuiltInRole]::Administrator)
 $r.interactiveSessions = @(Get-Process explorer -ErrorAction SilentlyContinue).Count
 
-$r.bootEvents = Get-OrError {
-    Get-WinEvent -FilterHashtable @{ LogName = 'Microsoft-Windows-Diagnostics-Performance/Operational'; Id = 100 } -MaxEvents 5 |
-        ForEach-Object {
-            $x = [xml]$_.ToXml(); $d = @{}
-            foreach ($n in $x.Event.EventData.Data) { $d[$n.Name] = $n.'#text' }
-            [ordered]@{ time = $_.TimeCreated.ToString('s'); bootMs = [int]$d.BootTime
-                mainPathMs = [int]$d.MainPathBootTime; postBootMs = [int]$d.BootPostBootTime }
-        }
-}
-
 # Windows runs automatic maintenance (Defender scans, defrag, missed tasks) when it goes idle,
 # and again after every snapshot revert because the clock jumps. Measuring a fixed time after
 # logon captures that work instead of idle, so wait until CPU stays below $QuietPct for
@@ -128,5 +118,17 @@ $r.edge = Get-OrError {
     (Get-Item "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe" -ErrorAction Stop).VersionInfo.ProductVersion
 }
 $r.store = Get-OrError { (Get-AppxPackage Microsoft.WindowsStore).Version }
+
+# Read last: Diagnostics-Performance writes event 100 only after the post-boot phase, which
+# after a logon takes minutes; read at the start it is missing for this boot.
+$r.bootEvents = Get-OrError {
+    Get-WinEvent -FilterHashtable @{ LogName = 'Microsoft-Windows-Diagnostics-Performance/Operational'; Id = 100 } -MaxEvents 5 |
+        ForEach-Object {
+            $x = [xml]$_.ToXml(); $d = @{}
+            foreach ($n in $x.Event.EventData.Data) { $d[$n.Name] = $n.'#text' }
+            [ordered]@{ time = $_.TimeCreated.ToString('s'); bootMs = [int]$d.BootTime
+                mainPathMs = [int]$d.MainPathBootTime; postBootMs = [int]$d.BootPostBootTime }
+        }
+}
 
 [IO.File]::WriteAllText($outFile, ($r | ConvertTo-Json -Depth 5))

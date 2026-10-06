@@ -18,7 +18,11 @@ function Get-RunFile([string[]]$Pattern) {
 }
 
 function Get-Average([object[]]$Runs, [string]$Name) {
-    $values = @($Runs | ForEach-Object { [double]$_.$Name })
+    # A missing value would count as 0 and shift the average without a sign.
+    $values = @($Runs | ForEach-Object {
+            if ($null -eq $_.$Name) { throw "A run has no $Name (collected $($_.collectedAt))" }
+            [double]$_.$Name
+        })
     [math]::Round(($values | Measure-Object -Average).Average, 1)
 }
 
@@ -35,7 +39,9 @@ function Read-Group([string[]]$Pattern) {
     $runs = @($files | ForEach-Object { Get-Content -LiteralPath $_.FullName -Raw | ConvertFrom-Json })
     $inventories = @($files | ForEach-Object {
             $inventory = [IO.Path]::ChangeExtension($_.FullName, '.inventory.json')
-            if (Test-Path -LiteralPath $inventory) { Get-Content -LiteralPath $inventory -Raw | ConvertFrom-Json }
+            # Without it the stable-name sets would cover fewer runs than the averages.
+            if (-not (Test-Path -LiteralPath $inventory)) { throw "Missing $inventory" }
+            Get-Content -LiteralPath $inventory -Raw | ConvertFrom-Json
         })
     [pscustomobject]@{ Files = $files; Runs = $runs; Inventories = $inventories }
 }
