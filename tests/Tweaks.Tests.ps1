@@ -65,4 +65,13 @@ Describe 'Tweak <Name>' -ForEach $tweaks {
     It 'names a revert or says there is none' {
         $text | Should -Match '(?m)^\s*# Revert: (KutayDesktop\\Revert-KutayOS\.ps1 -Id \S+|none\b)'
     }
+
+    # AME documents no option negation ('!name'), so a tweak may only use options the FeaturePages offer.
+    It 'uses only options from playbook.conf, never negated' {
+        $conf = Join-Path $PSScriptRoot '..\src\playbook\playbook.conf'
+        $known = @(([xml](Get-Content -LiteralPath $conf -Raw -Encoding UTF8)).SelectNodes('//CheckboxOption/Name') | ForEach-Object { $_.InnerText })
+        $used = @([regex]::Matches($text, '(?m)^[^#\r\n]*\boption:\s*[''"]?([^''",}\s]+)') | ForEach-Object { $_.Groups[1].Value })
+        $text | Should -Not -Match '(?m)^[^#\r\n]*\boptions:' -Because 'use one option: per action'
+        foreach ($option in $used) { $known -ccontains $option | Should -BeTrue -Because "'$option' must be a FeaturePages option" }
+    }
 }

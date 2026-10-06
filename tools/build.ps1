@@ -29,6 +29,20 @@ Get-ChildItem -LiteralPath $configDir -Recurse -Filter *.yml | ForEach-Object {
         }
 }
 
+# AME documents no option negation ('!name'); an unknown option name silently never runs.
+# Comment lines are skipped; quoted and unquoted forms are both read, so '!name' shows up as a name.
+$options = @($conf.SelectNodes('//CheckboxOption/Name') | ForEach-Object { $_.InnerText })
+if (-not $options.Count) { throw 'playbook.conf: no FeaturePages options found' }
+$optionPattern = '(?m)^[^#\r\n]*\boption:\s*[''"]?([^''",}\s]+)'
+Get-ChildItem -LiteralPath $configDir -Recurse -Filter *.yml | ForEach-Object {
+    $file = $_
+    $text = Get-Content -LiteralPath $file.FullName -Raw
+    foreach ($match in [regex]::Matches($text, $optionPattern)) {
+        $option = $match.Groups[1].Value
+        if ($options -cnotcontains $option) { throw "$($file.Name): option '$option' is not a FeaturePages option" }
+    }
+}
+
 $sevenZip = @(
     (Get-Command 7z.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source),
     (Join-Path $env:ProgramFiles '7-Zip\7z.exe')
