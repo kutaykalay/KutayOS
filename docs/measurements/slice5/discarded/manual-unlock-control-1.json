@@ -1,0 +1,86 @@
+{
+    "collectedAt":  "2026-10-05T22:12:32",
+    "os":  "Microsoft Windows 11 IoT Enterprise LTSC 10.0.26100.9550",
+    "uiLanguage":  "en-US",
+    "uptimeMin":  1.2,
+    "isAdmin":  true,
+    "interactiveSessions":  0,
+    "bootEvents":  [
+                       {
+                           "time":  "2026-09-28T22:46:32",
+                           "bootMs":  98772,
+                           "mainPathMs":  54672,
+                           "postBootMs":  44100
+                       },
+                       {
+                           "time":  "2026-09-28T15:31:07",
+                           "bootMs":  143979,
+                           "mainPathMs":  79242,
+                           "postBootMs":  64737
+                       },
+                       {
+                           "time":  "2026-09-28T00:44:37",
+                           "bootMs":  172134,
+                           "mainPathMs":  115962,
+                           "postBootMs":  56172
+                       },
+                       {
+                           "time":  "2026-09-27T22:52:43",
+                           "bootMs":  162057,
+                           "mainPathMs":  109754,
+                           "postBootMs":  52303
+                       },
+                       {
+                           "time":  "2026-09-27T17:26:07",
+                           "bootMs":  142696,
+                           "mainPathMs":  40696,
+                           "postBootMs":  102000
+                       }
+                   ],
+    "quietReached":  true,
+    "quietWaitMin":  8,
+    "quietAtUptimeMin":  9.2,
+    "quietRule":  "cpu\u003c10% for 5 min, max 60 min",
+    "measuredAtUptimeMin":  30,
+    "cpuIdleAvgPct":  1.53,
+    "cpuIdleMaxPct":  5,
+    "cpuSeconds":  120,
+    "cpuTopProcesses":  [
+                            {
+                                "name":  "System",
+                                "cpuSec":  0.3
+                            },
+                            {
+                                "name":  "vmtoolsd",
+                                "cpuSec":  0.2
+                            },
+                            {
+                                "name":  "svchost",
+                                "cpuSec":  0.2
+                            },
+                            {
+                                "name":  "powershell",
+                                "cpuSec":  0.1
+                            },
+                            {
+                                "name":  "svchost",
+                                "cpuSec":  0
+                            }
+                        ],
+    "ramTotalMB":  8191,
+    "ramUsedMB":  2484,
+    "commitMB":  2108,
+    "processCount":  95,
+    "runningServices":  80,
+    "diskUsedGB":  16.81,
+    "diskSizeGB":  63.02,
+    "winget":  "ERROR: The term \u0027winget.exe\u0027 is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.",
+    "appInstallerPkg":  null,
+    "appxCount":  54,
+    "bitlocker":  "BitLocker Drive Encryption: Configuration Tool version 10.0.26100\r\nCopyright (C) 2013 Microsoft Corporation. All rights reserved.\r\n\r\nVolume C: []\r\n[OS Volume]\r\n\r\n    Size:                 63.02 GB\r\n    BitLocker Version:    None\r\n    Conversion Status:    Fully Decrypted\r\n    Percentage Encrypted: 0.0%\r\n    Encryption Method:    None\r\n    Protection Status:    Protection Off\r\n    Lock Status:          Unlocked\r\n    Identification Field: None\r\n    Key Protectors:       None Found",
+    "tpm":  "present=True ready=True",
+    "secureBoot":  true,
+    "vbs":  "status=0 running=0",
+    "edge":  "154.0.4258.53",
+    "store":  null
+}

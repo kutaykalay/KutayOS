@@ -4,7 +4,9 @@ description: Edge no longer starts at sign-in or keeps running after its last wi
 actions:
   # Source: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/startupboostenabled
   # Source: https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/backgroundmodeenabled
-  # Evidence: documented. Both policies start Edge processes at OS sign-in; disabled turns that off.
+  # Evidence: measured (docs/measurements/slice5-performance.md: with a logon, six msedge.exe
+  # processes, ~77 MB private bytes, no longer start at sign-in). Both policies start Edge processes
+  # at OS sign-in; disabled turns that off.
   # Set as Recommended (SOFTWARE\Policies\Microsoft\Edge\Recommended), so the user can override it in
   # edge://settings/system. Per machine, Edge 88+. WebView2 reads its own policy key and is not affected.
   # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id disable-edge-background

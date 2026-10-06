@@ -4,7 +4,8 @@ description: Stops the Connected User Experiences and Telemetry service (DiagTra
 actions:
   # Source: https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server
   # Source: https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/blob/main/2009/ConfigurationFiles/Services.json
-  # Evidence: measured (see docs/measurements/slice5). Microsoft describes DiagTrack as the service
+  # Evidence: measured (docs/measurements/slice5-performance.md: own svchost, ~24 MB private bytes;
+  # with it off the Geolocation service no longer starts at idle). Microsoft describes DiagTrack as the service
   # that collects and sends diagnostic data and gives "No guidance" on disabling it; Microsoft's VDI
   # tool sets it to Disabled. Windows Update, Defender and search don't depend on it. Start=4 is
   # Disabled; the service stops at the next restart. Runs after disable-telemetry.

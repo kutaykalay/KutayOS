@@ -43,6 +43,25 @@ reserved storage off. Savings in `docs/measurements/slice4-disk.md`.
   (DISM covers the component store), temp file deletion (small gain, Windows cleans it), and
   `/ResetBase` (installed updates could no longer be uninstalled).
 
+## Performance (Slice 5, open items)
+
+Shipped: DiagTrack off (measured), CEIP tasks off (privacy), Edge background off (measured with a
+logon). Results in `docs/measurements/slice5-performance.md`.
+
+- **Delivery Optimization** and **visual effects**: candidates, not measured yet.
+- **Which privacy tweak stops VaultSvc / InventorySvc and keeps wisvc running.** Not DiagTrack
+  (isolated). Candidates: `AllowTelemetry=0`, `AITEnable=0`, CEIP tasks. Small effect, so isolate only
+  if one of them turns out to matter.
+- **Snapshot merge for new task names.** `Save-KutaySystemSnapshot` keeps the first snapshot as is,
+  so a task added to `disable-ceip-tasks` in a later version would get no snapshot entry and revert
+  would leave it disabled. Merge missing names into an existing snapshot before adding a task.
+- **Dropped after the idle inventory** (not running at idle, or needed by general users): SysMain,
+  scheduled defrag, Xbox services, troubleshooter services (DPS, WdiSystemHost, DiagSvc), RmSvc,
+  DusmSvc, icssvc, lfsvc (automatic time zone), MapsBroker, WerSvc, System Restore task, PI folder
+  tasks (Secure Boot updates), VerifyWinRE, memory diagnostics, Ultimate Performance plan (laptop
+  heat), background apps, StartupDelay (undocumented), and tasks that never ran at idle (WinSAT,
+  Maps, Family Safety, Work Folders).
+
 ## Privacy, per-user (parked from Slice 2)
 
 Slice 2 shipped device-wide (HKLM) policies only. These wait for the multi-hive snapshots above:
