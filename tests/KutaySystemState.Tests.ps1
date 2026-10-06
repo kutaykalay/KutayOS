@@ -73,6 +73,30 @@ Describe 'Get-KutaySystemState' {
         Get-KutaySystemState -Kind ScheduledTask -Name '\Microsoft\Windows\Test\Gone' | Should -Be 'Absent'
     }
 
+    It 'reads a scheduled task as Absent when the Task Scheduler reports it not found' {
+        Mock -ModuleName KutaySystemState Get-ScheduledTask {
+            throw [Management.Automation.ErrorRecord]::new([Exception]::new('No MSFT_ScheduledTask objects found'),
+                'CmdletizationQuery_NotFound_TaskName,Get-ScheduledTask', 'ObjectNotFound', $null)
+        }
+
+        Get-KutaySystemState -Kind ScheduledTask -Name '\Microsoft\Windows\Test\Gone' | Should -Be 'Absent'
+    }
+
+    It 'fails instead of reading Absent when the Task Scheduler cannot be read' {
+        Mock -ModuleName KutaySystemState Get-ScheduledTask {
+            throw [Management.Automation.ErrorRecord]::new([UnauthorizedAccessException]::new('Access is denied'),
+                'HRESULT 0x80070005,Get-ScheduledTask', 'PermissionDenied', $null)
+        }
+
+        { Get-KutaySystemState -Kind ScheduledTask -Name '\Microsoft\Windows\Test\Task' } | Should -Throw '*Access is denied*'
+    }
+
+    It 'fails when a task name matches more than one task' {
+        Mock -ModuleName KutaySystemState Get-ScheduledTask { [pscustomobject]@{ State = 'Ready' }; [pscustomobject]@{ State = 'Disabled' } }
+
+        { Get-KutaySystemState -Kind ScheduledTask -Name '\Microsoft\Windows\Test\Task*' } | Should -Throw '*more than one*'
+    }
+
     It 'needs a task name for a scheduled task' {
         { Get-KutaySystemState -Kind ScheduledTask } | Should -Throw '*Name*'
     }
@@ -164,6 +188,20 @@ Describe 'Set-KutaySystemState' {
 
         Should -Invoke -ModuleName KutaySystemState Disable-ScheduledTask -Times 0 -Exactly
         "$warned" | Should -BeLike '*Gone*'
+    }
+
+    It 'returns <Expected> when the state before is <Before>' -ForEach @(
+        @{ Before = 'Enabled'; Expected = $true }
+        @{ Before = 'Disabled'; Expected = $true }
+        @{ Before = 'Absent'; Expected = $false }
+    ) {
+        $script:current = $Before
+        $script:after = 'Disabled'
+        Mock -ModuleName KutaySystemState Disable-ScheduledTask { $script:current = $script:after }
+
+        $result = Set-KutaySystemState -Kind ScheduledTask -Name '\Microsoft\Windows\Test\Task' -State Disabled -WarningAction SilentlyContinue
+
+        $result | Should -BeExactly $Expected
     }
 
     It 'leaves a task alone when the snapshot recorded it as absent' {

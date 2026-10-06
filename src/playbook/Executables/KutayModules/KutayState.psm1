@@ -332,7 +332,7 @@ function Restore-KutaySnapshot {
         foreach ($item in @($snapshot.system)) {
             $name = ''
             if ($item.PSObject.Properties['name']) { $name = $item.name }
-            Set-KutaySystemState -Kind $item.kind -State $item.state -Name $name
+            $null = Set-KutaySystemState -Kind $item.kind -State $item.state -Name $name
         }
     }
     # Only forget the snapshot once every value is back, so a failed revert can be retried.

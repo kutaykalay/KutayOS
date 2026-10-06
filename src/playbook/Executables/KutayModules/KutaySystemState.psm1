@@ -69,8 +69,17 @@ function Split-KutayTaskName([string]$Name) {
 
 function Get-KutayScheduledTaskState([string]$Name) {
     $target = Split-KutayTaskName $Name
-    $task = Get-ScheduledTask -TaskPath $target.TaskPath -TaskName $target.TaskName -ErrorAction SilentlyContinue
-    if (-not $task) { return 'Absent' }
+    # Only "not found" means Absent. Any other error (Schedule service down, access denied) must stop
+    # the tweak: read as Absent it would be skipped and snapshotted wrong.
+    try {
+        $task = @(Get-ScheduledTask -TaskPath $target.TaskPath -TaskName $target.TaskName -ErrorAction Stop)
+    } catch {
+        if ($_.CategoryInfo.Category -eq 'ObjectNotFound') { return 'Absent' }
+        throw
+    }
+    if ($task.Count -eq 0) { return 'Absent' }
+    if ($task.Count -gt 1) { throw "Task '$Name' matches more than one task" }
+    $task = $task[0]
     # Ready, Running and Queued all mean the task will run.
     if ([string]$task.State -eq 'Disabled') { return 'Disabled' }
     return 'Enabled'
@@ -118,15 +127,16 @@ function Set-KutaySystemState {
     Assert-KutayStateTarget $Kind $Name
     $target = $Kind
     if ($Name) { $target = "$Kind $Name" }
+    # Returns $true when the state is $State afterwards, $false when it was left as it is.
     $current = Get-KutaySystemState -Kind $Kind -Name $Name
-    if ($current -eq $State) { return }
+    if ($current -eq $State) { return $true }
     # A task can be missing on this build (or was missing when the snapshot was taken and appeared
     # since, through an update). There is nothing KutayOS changed, so leave it as Windows has it.
     if ($current -eq 'Absent' -or $State -eq 'Absent') {
         Write-Warning "$target is $current, wanted $State; left as it is"
-        return
+        return $false
     }
-    if (-not $PSCmdlet.ShouldProcess($target, "Set to $State")) { return }
+    if (-not $PSCmdlet.ShouldProcess($target, "Set to $State")) { return $false }
 
     switch ($Kind) {
         # Only on/off is snapshotted. The hiberfile type (/type full|reduced) is a separate setting this
@@ -145,6 +155,7 @@ function Set-KutaySystemState {
     }
     $now = Get-KutaySystemState -Kind $Kind -Name $Name
     if ($now -ne $State) { throw "$target is still $now after setting it to $State" }
+    return $true
 }
 
 Export-ModuleMember -Function Get-KutaySystemState, Set-KutaySystemState, Invoke-KutayNativeCommand

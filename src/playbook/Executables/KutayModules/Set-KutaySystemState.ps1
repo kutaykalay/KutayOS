@@ -29,8 +29,11 @@ try {
     # A snapshot left by a failed change is harmless; reverting it sets the state it already has.
     Save-KutaySystemSnapshot -Id $Id -Kind $Kind -Name $Name
     foreach ($item in $Name) {
-        Set-KutaySystemState -Kind $Kind -State $State -Name $item
-        Write-KutayLog "$Kind $item is $State for $Id"
+        if (Set-KutaySystemState -Kind $Kind -State $State -Name $item) {
+            Write-KutayLog "$Kind $item is $State for $Id"
+        } else {
+            Write-KutayLog "$Kind $item skipped for $Id (not on this Windows)"
+        }
     }
     exit 0
 } catch {

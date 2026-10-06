@@ -111,8 +111,11 @@ function Initialize-SystemState([object[]]$Changes) {
         if ((Get-ChangeState $change) -ne $change.state) { continue }
         $other = @($script:SystemStates[$change.kind] | Where-Object { $_ -ne $change.state })[0]
         try {
-            Set-KutaySystemState -Kind $change.kind -State $other -Name ([string]$change.name)
-            $results.Add("INFO prepared $(Get-SystemKey $change)=$other")
+            if (Set-KutaySystemState -Kind $change.kind -State $other -Name ([string]$change.name) -WarningAction SilentlyContinue) {
+                $results.Add("INFO prepared $(Get-SystemKey $change)=$other")
+            } else {
+                $results.Add("INFO left as it is $(Get-SystemKey $change) (not on this Windows)")
+            }
         } catch {
             $results.Add("INFO could not prepare $(Get-SystemKey $change)=${other}: $($_.Exception.Message)")
         }
