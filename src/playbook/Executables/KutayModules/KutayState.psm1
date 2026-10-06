@@ -339,6 +339,59 @@ function Restore-KutaySnapshot {
     Remove-Item -LiteralPath $file
 }
 
+function New-KutayDifference([string]$Id, [string]$Item, [string]$Expected, [string]$Actual) {
+    [pscustomobject]@{ id = $Id; item = $Item; expected = $Expected; actual = $Actual }
+}
+
+function Format-KutayValue($Value) {
+    if (-not $Value.exists) { return 'absent' }
+    # JSON keeps item borders and empty items apart: @('a,b') is not @('a','b'), @('') is not @().
+    "$($Value.type) $(ConvertTo-Json -InputObject @($Value.data) -Compress)"
+}
+
+function Compare-KutayValue([string]$Id, [string]$Item, $Expected, $Actual) {
+    $want = Format-KutayValue $Expected
+    $have = Format-KutayValue $Actual
+    if ($want -cne $have) { New-KutayDifference $Id $Item $want $have }
+}
+
+function Compare-KutayUserItem([string]$Id, [object[]]$Items) {
+    $hives = @(Get-KutayUserHive)
+    foreach ($group in @($Items | Group-Object -Property user)) {
+        $hive = @($hives | Where-Object { $_.user -eq $group.Name }) | Select-Object -First 1
+        if (-not $hive) { New-KutayDifference $Id $group.Name 'profile' 'profile missing'; continue }
+        Invoke-KutayUserItem -Hive $hive -Items @($group.Group) -Action {
+            param($Item, $Root, $Inner)
+            Compare-KutayValue $Id "$($hive.user)\$($Item.path)|$($Item.name)" $Item (Read-KutayRegistryValue -Path "$Root\$Inner" -Name $Item.name)
+            $created = $null
+            if ($Item.PSObject.Properties['createdKey']) { $created = $Item.createdKey }
+            if (-not $Item.exists -and $created -and (Test-KutayRegistryKey "$Root\$((Split-KutayUserPath $created).path)")) {
+                New-KutayDifference $Id "$($hive.user)\$created" 'absent' 'key exists'
+            }
+        }
+    }
+}
+
+# Differences between a snapshot file and the current state; none means everything is back.
+# Read-only. Revert deletes the snapshot, so a revert check compares against a copy saved before.
+function Compare-KutaySnapshot {
+    param([Parameter(Mandatory)][string]$Path)
+    $snapshot = Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json
+    $id = [string]$snapshot.id
+    foreach ($item in @($snapshot.registry)) {
+        Compare-KutayValue $id "$($item.path)|$($item.name)" $item (Read-KutayRegistryValue -Path $item.path -Name $item.name)
+    }
+    if ($snapshot.PSObject.Properties['users'] -and @($snapshot.users).Count) { Compare-KutayUserItem $id @($snapshot.users) }
+    if ($snapshot.PSObject.Properties['system']) {
+        foreach ($item in @($snapshot.system)) {
+            $name = ''
+            if ($item.PSObject.Properties['name']) { $name = $item.name }
+            $state = Get-KutaySystemState -Kind $item.kind -Name $name
+            if ($state -ne $item.state) { New-KutayDifference $id "$($item.kind) $name".Trim() $item.state $state }
+        }
+    }
+}
+
 # Snapshot ids by name, or with -NewestFirst in reverse order of creation: tweaks can share a key
 # (only the first one records creating it), so revert must undo the last change first.
 function Get-KutaySnapshotId {
@@ -352,5 +405,5 @@ function Get-KutaySnapshotId {
 }
 
 Export-ModuleMember -Function Save-KutaySnapshot, Save-KutayUserSnapshot, Save-KutaySystemSnapshot, Set-KutayUserSetting,
-    Restore-KutaySnapshot, Get-KutaySnapshotId,
+    Restore-KutaySnapshot, Compare-KutaySnapshot, Get-KutaySnapshotId,
     Read-KutayRegistryValue, Set-KutayRegistryValue, Remove-KutayRegistryValue, Remove-KutayEmptyKey
