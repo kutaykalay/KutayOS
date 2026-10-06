@@ -118,7 +118,9 @@ Developer setup (winget, runtimes) and the C# Toolbox move to v2.
 ## Open questions
 
 - Actual `Checkpoint-Computer` behavior on the 24h limit and under TrustedInstaller (verify in VM).
-- `!cmd` properties and option negation in AME (see `docs/research/ame-actions.md`).
+- ~~`!cmd` properties and option negation in AME.~~ `!cmd` is documented (`docs/research/ame-actions.md`).
+  Option negation is still undocumented, so KutayOS does not use it; the build and the tweak tests
+  reject any option name that is not a FeaturePages option.
 - ~~Which consumer features LTSC 2024 actually ships.~~ Answered by `tools/vm/guest-inventory.ps1`:
   no Store, Widgets, Copilot, OneDrive or Xbox apps; Recall payload removed; only Edge and
   SecHealthUI provisioned. Advertising ID, tailored experiences, inking/typing collection, CEIP

@@ -10,13 +10,13 @@ Rufus "Windows User Experience" ticks, decided 2026-09-26:
 | Tick | Decision |
 | --- | --- |
 | Remove TPM / Secure Boot / RAM requirement | Not used |
-| Remove online Microsoft account requirement | Install guide (Slice 6) |
-| Create local account (name `PC`) | Install guide (Slice 6) |
-| Set regional options from this PC | Install guide (Slice 6) |
+| Remove online Microsoft account requirement | Install guide (`docs/install.md`) |
+| Create local account (name `PC`) | Install guide (`docs/install.md`) |
+| Set regional options from this PC | Install guide (`docs/install.md`) |
 | Disable data collection (privacy questions) | Playbook: post-install privacy policies (Slice 1/2) |
 | Disable BitLocker automatic device encryption | Deferred; opt-in with a warning if added |
 
-Rufus tick wording is from memory; verify on a real USB write.
+Rufus tick wording is from memory (Rufus 4.x); verify on a real USB write before 1.0.0.
 
 ## Shell (Slice 3)
 
@@ -78,7 +78,16 @@ Also unresolved (see `docs/research/privacy-policies.md`):
 - Find My Device, app location access, Windows Error Reporting: candidates for opt-in options with
   a warning.
 
-## Apps (new, not in the v1 PRD)
+## Real hardware (before 1.0.0)
+
+The full AME run passed in the VM (`docs/measurements/slice6-fullrun.md`). Still to check on a real PC:
+
+- A game with anti-cheat (Vanguard, FACEIT, EAC or BattlEye) launches after the run.
+- `disable-hibernation` and its revert (see Compact above).
+- The Rufus option wording in `docs/install.md`.
+- The latest cumulative update installs after the run (the VM snapshot was already current).
+
+## Apps (v2, decided 2026-10-06)
 
 - **PotPlayer** as the video player.
 - **nomacs** as the image viewer.
@@ -86,9 +95,9 @@ Also unresolved (see `docs/research/privacy-policies.md`):
 
 Notes:
 
-- Decided 2026-09-27: these ship as FeaturePages checkboxes (user can untick each app). The PRD
-  moved app installs (winget) to v2; pulling them into v1 as a new slice between 5 and 6 is proposed
-  and needs a PRD update.
+- Decided 2026-09-27: these ship as FeaturePages checkboxes (user can untick each app).
+- Decided 2026-10-06: they stay in v2 with the other app installs, as the PRD says; v1 ships without
+  them.
 - LTSC 2024 ships without Microsoft Store / App Installer, so `winget` is likely absent; verify in
   the VM. Fallback: official vendor installers with signature check.
 - Setting default apps: Windows protects user file/URL associations, so a silent per-user switch is

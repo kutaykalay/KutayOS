@@ -74,8 +74,17 @@ but `command` (required) instead of `exe`/`args`, and **`wait` defaults to false
 
 ## !cmd
 
-Official page has no properties table in the fetched content. Assume it mirrors `!powerShell`
-(`command`, `exeDir`, `runas`, `wait`, `timeout`, `handleExitCodes`) - verify before relying on it.
+Checked on https://docs.amelabs.net/developers/actions/Cmd.html on 2026-10-06:
+
+| Property | Default | Notes |
+|---|---|---|
+| `command` | required | |
+| `exeDir` | false | Working dir = playbook Executables folder |
+| `runas` | `trustedInstaller` | `currentUser`, `currentUserElevated`, `system`, `trustedInstaller` |
+| `timeout` | - | Kill + error when exceeded |
+| `wait` | **false** | Like `!powerShell`: always set `wait: true` |
+| `handleExitCodes` | - | Same handlers as `!run` |
+
 
 ## !task
 
@@ -85,9 +94,9 @@ the working assumption.
 
 ## Unverified
 
-- Option negation (e.g. `option: '!name'`): not found in the docs. Do not rely on it; use two
-  options on a RadioPage instead.
-- `!cmd` property set and defaults.
+- Option negation (e.g. `option: '!name'`): not found in the docs (checked again 2026-10-06). Do
+  not rely on it; use two options on a RadioPage instead. `tools/build.ps1` and
+  `tests/Tweaks.Tests.ps1` reject any option that is not a FeaturePages option name.
 - `!registryKey`: not checked in this pass.
 
 ## Sources

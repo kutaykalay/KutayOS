@@ -3,8 +3,8 @@
 </p>
 
 > [!WARNING]
-> **Early development. There is no release yet.** Don't run anything from this repo on a PC you
-> care about. Everything is tested in a virtual machine first.
+> **Preview (0.9.0).** It passed a full run in a virtual machine but has not been checked on real
+> hardware yet. Try it on a PC you can reinstall.
 
 ## What is KutayOS?
 
@@ -56,21 +56,27 @@ flowchart LR
   A["Run KutayOS<br/>in AME Wizard"] --> B["Create a<br/>restore point"]
   B --> C["Save current<br/>values"]
   C --> D["Apply tweaks<br/>(policies, settings)"]
-  D --> E["Health check<br/>Update, Defender, search"]
-  C -.-> R["Revert scripts<br/>put saved values back"]
+  D --> E["Restart, then<br/>health check"]
+  C -.-> R["Revert script<br/>puts saved values back"]
 ```
+
+## Install
+
+Install Windows 11 IoT Enterprise LTSC 2024, update it, then run the KutayOS `.apbx` in AME Wizard.
+The [install guide](docs/install.md) walks through the USB stick (Rufus), the AME Wizard run, the
+health check afterwards and how to undo everything.
 
 ## Roadmap
 
 | Step | Scope | Status |
 | --- | --- | --- |
 | 0. Groundwork | Build script, test VM, measurement tools | Done |
-| 1. Safety net | Restore point, value snapshots, revert scripts | Next |
-| 2. Clean | Telemetry, ads and suggestion policies | Planned |
-| 3. Minimal shell | Start, taskbar, Explorer defaults, user options | Planned |
-| 4. Compact | Component cleanup, CompactOS, optional hibernation | Planned |
-| 5. Performance | Measured tweaks only | Planned |
-| 6. Release | Health check, `.apbx` package, full VM test | Planned |
+| 1. Safety net | Restore point, value snapshots, revert scripts | Done |
+| 2. Clean | Telemetry, ads and suggestion policies | Done |
+| 3. Minimal shell | Start, taskbar, Explorer defaults, user options | Done |
+| 4. Compact | Component cleanup, CompactOS, optional hibernation | Done |
+| 5. Performance | Measured tweaks only | Done |
+| 6. Release | Health check, `.apbx` package, full VM test | 0.9.0 done; 1.0.0 after real-hardware checks |
 | v2. Toolbox | Desktop app for toggles, rollback and drift after updates | Later |
 
 Details are in the [product requirements](docs/PRD.md).
