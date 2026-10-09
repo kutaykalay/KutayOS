@@ -41,9 +41,14 @@ The option names are those of Rufus 4.x; newer versions may word them differentl
 2. Start AME Wizard and drop the `.apbx` file on it. In the test run on an updated LTSC 2024 it
    asked for nothing else: Defender stays on and no extra prerequisite screen appeared.
 3. Pick the options you want. Each one says what it changes; the ones with a trade-off are off by
-   default.
-4. Wait. A run takes about 5 minutes on a fast PC, most of it cleaning up old update files. KutayOS
-   creates a System Restore point first and stops if it can't.
+   default. The one exception is **Install winget and Windows Terminal**, which is ticked: LTSC has
+   no Microsoft Store, so it has neither. It downloads about 360 MB from Microsoft's GitHub, so the
+   PC needs internet; untick it to skip. Everything is checked against a pinned SHA256 and the
+   Microsoft signature before it is installed.
+4. Wait. A run takes about 5 minutes on a fast PC, most of it cleaning up old update files (add
+   about 5 minutes for the winget and Terminal download). KutayOS creates a System Restore point
+   first and stops if it can't, and it stops before changing anything else if a download or
+   signature check fails: fix the connection and run it again.
 5. AME Wizard restarts the PC when it is done.
 
 ## 4. Check that Windows still works
@@ -72,6 +77,12 @@ powershell -ExecutionPolicy Bypass -File "$env:windir\KutayOS\KutayDesktop\Rever
 
 Restart afterwards. Per-user settings come back for every account that existed when KutayOS ran.
 The System Restore point from before the run is a second way back.
+
+Reverting removes Windows Terminal and its update task. **winget stays**: Windows treats App
+Installer as part of the OS and refuses to uninstall it. It does nothing until you use it.
+Terminal updates itself through a scheduled task (`\KutayOS\Update Windows Terminal`) that runs
+`winget upgrade` as the signed-in user at logon and once a day; its log is
+`%LOCALAPPDATA%\KutayOS\terminal-update.log`.
 
 Logs are in `C:\Windows\KutayOS\Logs` (`install.log`, `revert.log`, `health.log`).
 

@@ -1,0 +1,19 @@
+---
+title: winget and Windows Terminal
+description: LTSC has no Microsoft Store, so it has neither winget nor Windows Terminal. This downloads both from Microsoft's GitHub releases (about 360 MB, needs internet), checks them against a pinned SHA256 and the Microsoft signature, and installs them for all users. A scheduled task keeps Terminal up to date
+actions:
+  # Source: https://learn.microsoft.com/en-us/windows/package-manager/winget/ (Sandbox section: no Store, get the package from the GitHub release)
+  # Source: https://learn.microsoft.com/en-us/windows/terminal/distributions (the preinstallation kit is the distribution for provisioning a Windows image)
+  # Source: https://learn.microsoft.com/en-us/windows/package-manager/winget/troubleshooting#system-context (the winget CLI is not supported as SYSTEM, so the update task runs per user)
+  # Source: https://learn.microsoft.com/en-us/powershell/module/dism/add-appxprovisionedpackage
+  # Evidence: documented. Install, update task and revert were run in the VM, see docs/measurements/winget-terminal.md.
+  # Revert: KutayDesktop\Revert-KutayOS.ps1 -Id install-winget-terminal-task
+  # The revert also removes Windows Terminal (-Id install-winget-terminal). winget (App Installer) stays: Windows treats it as part of
+  # the OS and refuses to uninstall it (0x80070032).
+  - !powerShell:
+    command: '.\KutayModules\Install-KutayApps.ps1'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    handleExitCodes: {"!0": halt}
+    option: 'install-winget-terminal'

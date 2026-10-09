@@ -98,8 +98,13 @@ Notes:
 - Decided 2026-09-27: these ship as FeaturePages checkboxes (user can untick each app).
 - Decided 2026-10-06: they stay in v2 with the other app installs, as the PRD says; v1 ships without
   them.
-- LTSC 2024 ships without Microsoft Store / App Installer, so `winget` is likely absent; verify in
-  the VM. Fallback: official vendor installers with signature check.
+- LTSC 2024 ships without Microsoft Store / App Installer; confirmed in the VM. winget and Windows
+  Terminal now install through the `install-winget-terminal` option (2026-10-09, see
+  `docs/measurements/winget-terminal.md`), so these apps can use `winget install` instead of
+  vendor installers (check each id in the community source first).
+- Open after winget + Terminal: App Installer has no update path (`winget upgrade
+  Microsoft.AppInstaller` unverified; pinned version only moves with a KutayOS release); a second
+  user's first logon upgrading the stale provisioned Terminal; a run through AME Wizard itself.
 - Setting default apps: Windows protects user file/URL associations, so a silent per-user switch is
   not supported. Candidate supported path: a default-associations XML (`Dism
   /Export-DefaultAppAssociations`) plus the "Set a default associations configuration file"

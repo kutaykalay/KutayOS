@@ -129,4 +129,7 @@ Developer setup (winget, runtimes) and the C# Toolbox move to v2.
   turns Compact OS on by itself on a small disk (64 GB), reserved storage is only on where its
   policy passes, and hibernation needs firmware support the VM lacks.
 - winget, App Installer and Microsoft Store are absent on a clean LTSC 2024 install (checked in
-  the VM on 2026-09-27). App installs need another path.
+  the VM on 2026-09-27). Decided 2026-10-09: winget and Windows Terminal are the one app install
+  that ships in v1 (option `install-winget-terminal`, on by default), from Microsoft's GitHub
+  releases with a pinned SHA256 and signature check; Terminal updates through a per-user task
+  that runs winget. See `docs/measurements/winget-terminal.md`. Other apps stay in v2.

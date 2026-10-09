@@ -19,6 +19,11 @@ actions:
     runas: currentUserElevated
     handleExitCodes: {"!0": halt}
 
+  # Right after the restore point and before any tweak: a failed download or signature check halts
+  # here, while almost nothing has been changed.
+  - !writeStatus: {status: 'Installing winget and Windows Terminal'}
+  - !task: {path: 'tweaks\setup\install-winget-terminal.yml'}
+
   - !writeStatus: {status: 'Applying privacy settings'}
   - !task: {path: 'tweaks\privacy\disable-telemetry.yml'}
   - !task: {path: 'tweaks\privacy\disable-app-telemetry.yml'}
