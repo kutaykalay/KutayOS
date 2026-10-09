@@ -38,7 +38,8 @@ The option names are those of Rufus 4.x; newer versions may word them differentl
 1. Download **AME Wizard** from [ameliorated.io](https://ameliorated.io/). There is no published
    KutayOS release yet: build `dist/KutayOS-<version>.apbx` yourself (see
    [Build from source](../README.md#build-from-source)).
-2. Start AME Wizard and drop the `.apbx` file on it. Follow its prompts.
+2. Start AME Wizard and drop the `.apbx` file on it. In the test run on an updated LTSC 2024 it
+   asked for nothing else: Defender stays on and no extra prerequisite screen appeared.
 3. Pick the options you want. Each one says what it changes; the ones with a trade-off are off by
    default.
 4. Wait. A run takes about 5 minutes on a fast PC, most of it cleaning up old update files. KutayOS
