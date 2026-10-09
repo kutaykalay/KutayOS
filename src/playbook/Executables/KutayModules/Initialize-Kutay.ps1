@@ -27,4 +27,19 @@ foreach ($folder in 'KutayModules', 'KutayDesktop') {
     Copy-Item -Path (Join-Path $executables "$folder\*") -Destination $target -Recurse -Force
 }
 Write-KutayLog "Copied KutayModules and KutayDesktop to $root"
+
+# Only SYSTEM and Administrators may change this folder; everyone else can read and run from it. The
+# winget/Terminal update task runs KutayDesktop\Update-KutayTerminal.ps1 for every user, so a script a
+# standard user could edit there would run as each user at logon. This is also Windows' default for a
+# folder under C:\Windows; setting it makes the rule explicit.
+$acl = New-Object Security.AccessControl.DirectorySecurity
+$acl.SetAccessRuleProtection($true, $false)
+$fullControl = [Security.AccessControl.FileSystemRights]::FullControl
+$readExecute = [Security.AccessControl.FileSystemRights]::ReadAndExecute
+foreach ($grant in @(@('S-1-5-18', $fullControl), @('S-1-5-32-544', $fullControl), @('S-1-5-32-545', $readExecute))) {
+    $identity = New-Object Security.Principal.SecurityIdentifier $grant[0]
+    $acl.AddAccessRule((New-Object Security.AccessControl.FileSystemAccessRule $identity, $grant[1], 'ContainerInherit, ObjectInherit', 'None', 'Allow'))
+}
+Set-Acl -LiteralPath $root -AclObject $acl
+Write-KutayLog "Set the permissions of ${root}: SYSTEM and Administrators full control, Users read and run"
 exit 0
