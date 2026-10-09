@@ -132,7 +132,7 @@ function Save-KutaySnapshot {
 function Save-KutaySystemSnapshot {
     param(
         [Parameter(Mandatory)][AllowEmptyString()][string]$Id,
-        [Parameter(Mandatory)][ValidateSet('Hibernation', 'CompactOS', 'ReservedStorage', 'ScheduledTask')][string]$Kind,
+        [Parameter(Mandatory)][ValidateSet('Hibernation', 'CompactOS', 'ReservedStorage', 'ScheduledTask', 'AppPackage', 'KutayTask')][string]$Kind,
         [string[]]$Name = @('')
     )
     $file = Get-SnapshotFile $Id

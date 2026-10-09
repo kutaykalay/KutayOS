@@ -247,3 +247,118 @@ Describe 'Invoke-KutayNativeCommand' {
             Should -Not -Throw
     }
 }
+
+Describe 'AppPackage state' {
+    BeforeEach {
+        $script:provisioned = @()
+        $script:installed = @()
+        Mock -ModuleName KutaySystemState Get-AppxProvisionedPackage { $script:provisioned }
+        Mock -ModuleName KutaySystemState Get-AppxPackage { $script:installed }
+        Mock -ModuleName KutaySystemState Remove-AppxProvisionedPackage { $script:provisioned = @() }
+        Mock -ModuleName KutaySystemState Remove-AppxPackage { $script:installed = @() }
+    }
+
+    It 'reads Absent when no user has the package and it is not provisioned' {
+        Get-KutaySystemState -Kind AppPackage -Name 'Microsoft.WindowsTerminal' | Should -Be 'Absent'
+    }
+
+    It 'reads Installed when the package is provisioned' {
+        $script:provisioned = @([pscustomobject]@{ DisplayName = 'Microsoft.WindowsTerminal'; PackageName = 'Microsoft.WindowsTerminal_1.0.0.0_neutral_~_8wekyb3d8bbwe' })
+        Get-KutaySystemState -Kind AppPackage -Name 'Microsoft.WindowsTerminal' | Should -Be 'Installed'
+    }
+
+    It 'reads Installed when only a user has the package' {
+        $script:installed = @([pscustomobject]@{ Name = 'Microsoft.WindowsTerminal'; PackageFullName = 'Microsoft.WindowsTerminal_1.0.0.0_x64__8wekyb3d8bbwe' })
+        Get-KutaySystemState -Kind AppPackage -Name 'Microsoft.WindowsTerminal' | Should -Be 'Installed'
+    }
+
+    It 'does not match another package that only starts with the same name' {
+        $script:provisioned = @([pscustomobject]@{ DisplayName = 'Microsoft.WindowsTerminalPreview'; PackageName = 'x' })
+        Get-KutaySystemState -Kind AppPackage -Name 'Microsoft.WindowsTerminal' | Should -Be 'Absent'
+    }
+
+    It 'needs a package name' {
+        { Get-KutaySystemState -Kind AppPackage } | Should -Throw '*Name*'
+    }
+
+    It 'removes the provisioned copy and every user copy to set Absent' {
+        $script:provisioned = @([pscustomobject]@{ DisplayName = 'Microsoft.WindowsTerminal'; PackageName = 'Microsoft.WindowsTerminal_1.0.0.0_neutral_~_8wekyb3d8bbwe' })
+        $script:installed = @([pscustomobject]@{ Name = 'Microsoft.WindowsTerminal'; PackageFullName = 'Microsoft.WindowsTerminal_1.0.0.0_x64__8wekyb3d8bbwe' })
+
+        Set-KutaySystemState -Kind AppPackage -Name 'Microsoft.WindowsTerminal' -State Absent | Should -BeTrue
+
+        Should -Invoke -ModuleName KutaySystemState Remove-AppxProvisionedPackage -Times 1 -Exactly -ParameterFilter {
+            $PackageName -eq 'Microsoft.WindowsTerminal_1.0.0.0_neutral_~_8wekyb3d8bbwe' -and $Online
+        }
+        Should -Invoke -ModuleName KutaySystemState Remove-AppxPackage -Times 1 -Exactly -ParameterFilter {
+            $Package -eq 'Microsoft.WindowsTerminal_1.0.0.0_x64__8wekyb3d8bbwe' -and $AllUsers
+        }
+    }
+
+    It 'fails when the package is still there after the removal' {
+        $script:installed = @([pscustomobject]@{ Name = 'Microsoft.WindowsTerminal'; PackageFullName = 'p' })
+        Mock -ModuleName KutaySystemState Remove-AppxPackage { }
+
+        { Set-KutaySystemState -Kind AppPackage -Name 'Microsoft.WindowsTerminal' -State Absent } | Should -Throw '*still Installed*'
+    }
+
+    It 'does nothing when the package is already absent' {
+        Set-KutaySystemState -Kind AppPackage -Name 'Microsoft.WindowsTerminal' -State Absent
+
+        Should -Invoke -ModuleName KutaySystemState Remove-AppxPackage -Times 0 -Exactly
+    }
+
+    It 'leaves a package alone that was installed before KutayOS and is gone now, with a warning' {
+        Set-KutaySystemState -Kind AppPackage -Name 'Microsoft.WindowsTerminal' -State Installed -WarningVariable warned -WarningAction SilentlyContinue | Should -BeFalse
+
+        "$warned" | Should -BeLike '*cannot install*'
+        Should -Invoke -ModuleName KutaySystemState Remove-AppxPackage -Times 0 -Exactly
+    }
+
+    It 'refuses to remove a package KutayOS does not install' {
+        $script:installed = @([pscustomobject]@{ Name = 'Microsoft.WindowsStore'; PackageFullName = 'p' })
+
+        { Set-KutaySystemState -Kind AppPackage -Name 'Microsoft.WindowsStore' -State Absent } | Should -Throw '*not a package KutayOS installs*'
+        Should -Invoke -ModuleName KutaySystemState Remove-AppxPackage -Times 0 -Exactly
+    }
+}
+
+Describe 'KutayTask state' {
+    BeforeEach {
+        $script:task = $null
+        Mock -ModuleName KutaySystemState Get-ScheduledTask { if ($script:task) { $script:task } }
+        Mock -ModuleName KutaySystemState Unregister-ScheduledTask { $script:task = $null }
+    }
+
+    It 'reads Absent when the task does not exist' {
+        Get-KutaySystemState -Kind KutayTask -Name '\KutayOS\Update Windows Terminal' | Should -Be 'Absent'
+    }
+
+    It 'reads Present for an existing task, enabled or not' {
+        $script:task = [pscustomobject]@{ State = 'Disabled' }
+        Get-KutaySystemState -Kind KutayTask -Name '\KutayOS\Update Windows Terminal' | Should -Be 'Present'
+    }
+
+    It 'unregisters the task to set Absent' {
+        $script:task = [pscustomobject]@{ State = 'Ready' }
+
+        Set-KutaySystemState -Kind KutayTask -Name '\KutayOS\Update Windows Terminal' -State Absent | Should -BeTrue
+
+        Should -Invoke -ModuleName KutaySystemState Unregister-ScheduledTask -Times 1 -Exactly -ParameterFilter {
+            $TaskPath -eq '\KutayOS\' -and $TaskName -eq 'Update Windows Terminal' -and $Confirm -eq $false
+        }
+    }
+
+    It 'leaves a task alone that existed before KutayOS and is gone now, with a warning' {
+        Set-KutaySystemState -Kind KutayTask -Name '\KutayOS\Update Windows Terminal' -State Present -WarningVariable warned -WarningAction SilentlyContinue | Should -BeFalse
+
+        "$warned" | Should -BeLike '*cannot create*'
+    }
+
+    It 'refuses to remove a task outside the KutayOS folder' {
+        $script:task = [pscustomobject]@{ State = 'Ready' }
+
+        { Set-KutaySystemState -Kind KutayTask -Name '\Microsoft\Windows\Defrag\ScheduledDefrag' -State Absent } | Should -Throw '*not a KutayOS task*'
+        Should -Invoke -ModuleName KutaySystemState Unregister-ScheduledTask -Times 0 -Exactly
+    }
+}

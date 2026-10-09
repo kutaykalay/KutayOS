@@ -13,9 +13,15 @@ $script:States = @{
     ReservedStorage = 'Enabled', 'Disabled'
     # Absent: this Windows build does not have the task. Only a snapshot records it; setting it is a no-op.
     ScheduledTask   = 'Enabled', 'Disabled', 'Absent'
+    # Things KutayOS adds itself (the optional winget + Terminal step): a revert can only remove them,
+    # the install step is the only way to add them.
+    AppPackage      = 'Installed', 'Absent'
+    KutayTask       = 'Present', 'Absent'
 }
-# Kinds that name one item of many (a task), so they need -Name.
-$script:NamedKinds = @('ScheduledTask')
+# Packages the AppPackage kind may remove. App Installer is not here: Windows refuses to uninstall it.
+$script:OwnedPackages = @('Microsoft.WindowsTerminal')
+# Kinds that name one item of many (a task, a package), so they need -Name.
+$script:NamedKinds = @('ScheduledTask', 'AppPackage', 'KutayTask')
 $script:PowerKey = 'HKLM:\SYSTEM\CurrentControlSet\Control\Power'
 $script:HiberFile = Join-Path $env:SystemDrive 'hiberfil.sys'
 # compact.exe /CompactOS keeps its state here (1 = compact). The WOF driver hides the compression from
@@ -85,9 +91,27 @@ function Get-KutayScheduledTaskState([string]$Name) {
     return 'Enabled'
 }
 
+# Installed when the package is provisioned for new users or any user has it. The frameworks it
+# depends on (VCLibs, Windows App Runtime) are separate packages and not part of this state.
+function Get-KutayAppPackageState([string]$Name) {
+    $provisioned = @(Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -eq $Name })
+    $users = @(Get-AppxPackage -AllUsers -Name $Name | Where-Object { $_.Name -eq $Name })
+    if ($provisioned.Count -or $users.Count) { return 'Installed' }
+    return 'Absent'
+}
+
+function Remove-KutayAppPackage([string]$Name) {
+    foreach ($package in @(Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -eq $Name })) {
+        Remove-AppxProvisionedPackage -Online -PackageName $package.PackageName | Out-Null
+    }
+    foreach ($package in @(Get-AppxPackage -AllUsers -Name $Name | Where-Object { $_.Name -eq $Name })) {
+        Remove-AppxPackage -Package $package.PackageFullName -AllUsers
+    }
+}
+
 function Get-KutaySystemState {
     param(
-        [Parameter(Mandatory)][ValidateSet('Hibernation', 'CompactOS', 'ReservedStorage', 'ScheduledTask')][string]$Kind,
+        [Parameter(Mandatory)][ValidateSet('Hibernation', 'CompactOS', 'ReservedStorage', 'ScheduledTask', 'AppPackage', 'KutayTask')][string]$Kind,
         [string]$Name = ''
     )
     Assert-KutayStateTarget $Kind $Name
@@ -113,26 +137,44 @@ function Get-KutaySystemState {
             return $state
         }
         'ScheduledTask' { return Get-KutayScheduledTaskState $Name }
+        'AppPackage' { return Get-KutayAppPackageState $Name }
+        'KutayTask' {
+            if ((Get-KutayScheduledTaskState $Name) -eq 'Absent') { return 'Absent' }
+            return 'Present'
+        }
     }
 }
 
 function Set-KutaySystemState {
     [CmdletBinding(SupportsShouldProcess)]
     param(
-        [Parameter(Mandatory)][ValidateSet('Hibernation', 'CompactOS', 'ReservedStorage', 'ScheduledTask')][string]$Kind,
+        [Parameter(Mandatory)][ValidateSet('Hibernation', 'CompactOS', 'ReservedStorage', 'ScheduledTask', 'AppPackage', 'KutayTask')][string]$Kind,
         [Parameter(Mandatory)][string]$State,
         [string]$Name = ''
     )
     Assert-KutayStateName $Kind $State
     Assert-KutayStateTarget $Kind $Name
+    # These two kinds remove things, so they only touch what KutayOS itself adds.
+    if ($Kind -eq 'AppPackage' -and $script:OwnedPackages -notcontains $Name) { throw "$Name is not a package KutayOS installs" }
+    if ($Kind -eq 'KutayTask' -and -not $Name.StartsWith('\KutayOS\')) { throw "$Name is not a KutayOS task" }
     $target = $Kind
     if ($Name) { $target = "$Kind $Name" }
     # Returns $true when the state is $State afterwards, $false when it was left as it is.
     $current = Get-KutaySystemState -Kind $Kind -Name $Name
     if ($current -eq $State) { return $true }
+    # A snapshot of "Installed"/"Present" means it was there before KutayOS, and it is gone now (the user
+    # removed it). Nothing for the revert to put back; failing here would leave the snapshot behind forever.
+    if ($Kind -eq 'AppPackage' -and $State -ne 'Absent') {
+        Write-Warning "$Name was installed before KutayOS and is gone now; Set-KutaySystemState cannot install it, left as it is"
+        return $false
+    }
+    if ($Kind -eq 'KutayTask' -and $State -ne 'Absent') {
+        Write-Warning "$Name existed before KutayOS and is gone now; Set-KutaySystemState cannot create it, left as it is"
+        return $false
+    }
     # A task can be missing on this build (or was missing when the snapshot was taken and appeared
     # since, through an update). There is nothing KutayOS changed, so leave it as Windows has it.
-    if ($current -eq 'Absent' -or $State -eq 'Absent') {
+    if ($Kind -eq 'ScheduledTask' -and ($current -eq 'Absent' -or $State -eq 'Absent')) {
         Write-Warning "$target is $current, wanted $State; left as it is"
         return $false
     }
@@ -144,6 +186,11 @@ function Set-KutaySystemState {
         'Hibernation' { Invoke-KutayNativeCommand -FilePath 'powercfg.exe' -ArgumentList '/hibernate', $State.ToLowerInvariant() | Out-Null }
         'CompactOS' { Invoke-KutayNativeCommand -FilePath 'compact.exe' -ArgumentList "/CompactOS:$($State.ToLowerInvariant())" | Out-Null }
         'ReservedStorage' { Set-WindowsReservedStorageState -State $State | Out-Null }
+        'AppPackage' { Remove-KutayAppPackage $Name }
+        'KutayTask' {
+            $task = Split-KutayTaskName $Name
+            Unregister-ScheduledTask -TaskPath $task.TaskPath -TaskName $task.TaskName -Confirm:$false
+        }
         'ScheduledTask' {
             $task = Split-KutayTaskName $Name
             if ($State -eq 'Disabled') {
