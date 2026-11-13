@@ -26,6 +26,19 @@ options:
 
 The option names are those of Rufus 4.x; newer versions may word them differently.
 
+### Optional: inject KutayOS into a Windows ISO
+
+KutayOS supports AME Beta's [ISO injection workflow](https://docs.amelabs.net/iso_injection/execute.html).
+In AME Beta, select a compatible Windows 11 IoT Enterprise LTSC 2024 ISO, choose KutayOS under
+**Select playbook to modify ISO**, select the desired features, then complete the injection. AME
+embeds KutayOS and its custom OOBE into the ISO. Windows installs first; KutayOS runs during the
+custom OOBE after the first boot. Its PowerShell actions are not run against the offline image.
+
+The optional **Install winget and Windows Terminal** feature downloads software during OOBE, so
+connect to the internet when prompted or untick that feature before injection. Use a stock, licensed
+Windows ISO for the supported LTSC 2024 build (26100). The end-to-end AME ISO installation has not
+yet been tested on physical hardware.
+
 ## 2. Install and update Windows
 
 1. Install Windows from the USB stick and sign in with the local account.

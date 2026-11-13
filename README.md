@@ -66,6 +66,11 @@ Install Windows 11 IoT Enterprise LTSC 2024, update it, then run the KutayOS `.a
 The [install guide](docs/install.md) walks through the USB stick (Rufus), the AME Wizard run, the
 health check afterwards and how to undo everything.
 
+KutayOS also declares support for AME Beta's [ISO injection](https://docs.amelabs.net/developers/iso.html)
+flow. AME embeds the playbook and a custom OOBE in a compatible Windows ISO; KutayOS applies its
+changes after Windows first boots, rather than modifying the offline Windows image. The optional
+winget and Terminal install needs internet during OOBE.
+
 ## Roadmap
 
 | Step | Scope | Status |

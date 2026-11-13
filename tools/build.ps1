@@ -13,6 +13,9 @@ $configDir = Join-Path $root 'Configuration'
 [xml]$conf = Get-Content -LiteralPath (Join-Path $root 'playbook.conf') -Raw -Encoding UTF8
 $version = $conf.Playbook.Version
 if (-not $version) { throw 'playbook.conf: <Version> is missing' }
+if ($conf.Playbook.SupportsISO -ne 'true') { throw 'playbook.conf: <SupportsISO>true</SupportsISO> is required' }
+$oobeBullets = @($conf.Playbook.OOBE.BulletPoints.BulletPoint)
+if ($oobeBullets.Count -ne 3) { throw 'playbook.conf: ISO support requires exactly three OOBE summary bullet points' }
 if (-not (Test-Path (Join-Path $configDir 'custom.yml'))) { throw 'Configuration\custom.yml is missing' }
 
 # AME resolves !task paths relative to Configuration\; a typo only surfaces mid-install otherwise.
